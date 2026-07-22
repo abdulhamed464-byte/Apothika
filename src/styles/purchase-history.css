@@ -1,0 +1,175 @@
+/* =========================================
+   APOTHIKA PURCHASE HISTORY UI
+========================================= */
+
+
+.purchase-history-header {
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:20px;
+
+    margin-bottom:25px;
+
+}
+
+
+
+.purchase-history-header h2 {
+
+    color:#ffffff;
+
+    font-size:26px;
+
+    font-weight:800;
+
+    margin:0;
+
+}
+
+
+
+
+
+.purchase-filters {
+
+    display:flex;
+
+    gap:15px;
+
+    align-items:center;
+
+}
+
+
+
+
+
+.purchase-search-box {
+
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+
+    padding:12px 18px;
+
+
+    border-radius:16px;
+
+
+    background:
+
+    rgba(255,255,255,.08);
+
+
+    border:
+
+    1px solid rgba(255,255,255,.15);
+
+
+    backdrop-filter:
+
+    blur(15px);
+
+
+}
+
+
+
+
+
+.purchase-search-box svg {
+
+    color:#22c55e;
+
+}
+
+
+
+
+.purchase-search-box input {
+
+
+    background:transparent;
+
+
+    border:none;
+
+
+    outline:none;
+
+
+    color:white;
+
+
+    width:220px;
+
+
+    font-size:14px;
+
+
+}
+
+
+
+.purchase-search-box input::placeholder {
+
+
+    color:#94a3b8;
+
+
+}
+
+
+
+
+.purchase-filters select {
+
+
+    padding:12px 18px;
+
+
+    border-radius:16px;
+
+
+    border:none;
+
+
+    outline:none;
+
+
+    background:
+
+    rgba(255,255,255,.12);
+
+
+    color:white;
+
+
+    font-weight:600;
+
+
+    cursor:pointer;
+
+
+}
+
+
+
+
+.purchase-filters select option {
+
+
+    background:#0f172a;
+
+    color:white;
+
+}

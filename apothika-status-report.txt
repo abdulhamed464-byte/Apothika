@@ -1,0 +1,1167 @@
+]633;E;echo "================ APOTHIKA STATUS REPORT ================";3fc8c642-5618-403c-a084-b5f109cc4dac]633;C================ APOTHIKA STATUS REPORT ================
+
+===== PROJECT STRUCTURE =====
+src/App.css
+src/App.tsx
+src/Routes/AppRouter.tsx
+src/assets/hero.png
+src/assets/react.svg
+src/assets/vite.svg
+src/components/auth/ProtectedRoute.tsx
+src/components/dashboard/DashboardHeader.tsx
+src/components/inventory/InventoryDetails.tsx
+src/components/inventory/InventoryReports.tsx
+src/components/inventory/InventoryStats.tsx
+src/components/inventory/InventoryTable.tsx
+src/components/inventory/ProductForm.tsx
+src/components/inventory/StockMovement.tsx
+src/components/purchase/PurchaseAnalytics.tsx
+src/components/purchase/PurchaseDetails.tsx
+src/components/purchase/PurchaseForm.tsx
+src/components/purchase/PurchaseHistory.tsx
+src/components/purchase/PurchaseReports.tsx
+src/components/purchase/PurchaseStats.tsx
+src/components/purchase/PurchaseSummary.tsx
+src/components/sidebar/Sidebar.tsx
+src/index.css
+src/layouts/dashboard/DashboardLayout.tsx
+src/lib/supabase.ts
+src/main.tsx
+src/pages/Dashboard.tsx
+src/pages/Inventory.tsx
+src/pages/Login.tsx
+src/pages/Purchases.tsx
+src/pages/Register.tsx
+src/pages/TestAuth.tsx
+src/services/Auth/AuthService.ts
+src/services/Auth/Onboarding/OnboardingService.ts
+src/services/auth/AuthSession.ts
+src/services/dashboard/DashboardService.ts
+src/services/inventory/ProductService.ts
+src/services/modules/ModuleService.ts
+src/services/purchase/PurchaseService.ts
+src/services/workspace/WorkspaceService.ts
+src/styles/dashboard.css
+src/styles/inventory.css
+src/styles/purchase-history.css
+src/styles/purchases.css
+src/styles/sidebar.css
+src/styles/theme.css
+src/types/auth.ts
+
+===== PACKAGE.JSON =====
+{
+  "name": "apothika",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 0.0.0.0",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.110.4",
+    "@tailwindcss/vite": "^4.3.2",
+    "jspdf": "^4.2.1",
+    "jspdf-autotable": "^5.0.8",
+    "lucide-react": "^1.24.0",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7",
+    "react-router-dom": "^7.18.1",
+    "recharts": "^3.9.2",
+    "tailwindcss": "^4.3.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^24.13.2",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.3",
+    "eslint": "^10.6.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.3",
+    "globals": "^17.7.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.62.0",
+    "vite": "^8.1.1"
+  }
+}
+
+===== GIT STATUS =====
+On branch main
+Your branch is up to date with 'origin/main'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   README.md
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	.env
+	.gitignore
+	apothika-status-report.txt
+	apothika@0.0.0
+	eslint.config.js
+	index.html
+	package-lock.json
+	package.json
+	public/
+	src/
+	tsconfig.app.json
+	tsconfig.json
+	tsconfig.node.json
+	vite
+	vite.config.ts
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+===== BUILD =====
+
+> apothika@0.0.0 build
+> tsc -b && vite build
+
+vite v8.1.4 building client environment for production...
+[2Ktransforming...✓ 2620 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                          0.45 kB │ gzip:   0.29 kB
+dist/assets/index-c6rUWJy0.css          16.68 kB │ gzip:   3.77 kB
+dist/assets/purify.es-DuRL7t6i.js       26.87 kB │ gzip:  10.45 kB
+dist/assets/index.es-B2Oq-TQT.js       151.32 kB │ gzip:  48.88 kB
+dist/assets/html2canvas-Brn1P8Ns.js    199.55 kB │ gzip:  46.77 kB
+dist/assets/index-Cz5fEC0Q.js        1,546.05 kB │ gzip: 472.03 kB
+
+✓ built in 1.81s
+
+===== INVENTORY PAGE =====
+import { useEffect, useState } from "react";
+
+import { ProductService } from "../services/inventory/ProductService";
+import type { Product } from "../services/inventory/ProductService";
+
+import InventoryStats from "../components/inventory/InventoryStats";
+import InventoryTable from "../components/inventory/InventoryTable";
+import InventoryReports from "../components/inventory/InventoryReports";
+import ProductForm from "../components/inventory/ProductForm";
+
+import "../styles/inventory.css";
+
+function Inventory() {
+
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const [productForm, setProductForm] = useState({
+    product_name: "",
+    description: "",
+    sku: "",
+    barcode: "",
+    category: "",
+    brand: "",
+    unit: "",
+    purchase_price: "",
+    selling_price: "",
+    tax_rate: "0",
+    minimum_stock: "",
+    image_url: "",
+    track_inventory: true,
+    batch_required: false,
+    expiry_required: false,
+    status: "Active"
+  });
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  async function loadProducts() {
+    try {
+
+      const workspaceId =
+        "4e24cab5-087c-4004-8d80-1098dbbe3ade";
+
+      const data =
+        await ProductService.getProducts(workspaceId);
+
+      setProducts(data);
+
+    } catch (error) {
+
+      console.error(
+        "Inventory loading failed",
+        error
+      );
+
+    } finally {
+
+      setLoading(false);
+
+    }
+  }
+
+  function handleProductChange(
+    e: React.ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
+  ) {
+
+    const { name, value, type } = e.target;
+
+    setProductForm({
+
+      ...productForm,
+
+      [name]:
+
+        type === "checkbox"
+
+          ? (e.target as HTMLInputElement).checked
+
+          : value
+
+    });
+
+  }
+
+  async function handleProductSubmit(
+    e: React.FormEvent
+  ) {
+
+    e.preventDefault();
+
+    try {
+
+      setSaving(true);
+
+      await ProductService.createProduct({
+
+        ...productForm,
+
+        workspace_id:
+          "4e24cab5-087c-4004-8d80-1098dbbe3ade",
+
+        purchase_price:
+          Number(productForm.purchase_price),
+
+        selling_price:
+          Number(productForm.selling_price),
+
+        minimum_stock:
+          Number(productForm.minimum_stock),
+
+        tax_rate:
+          Number(productForm.tax_rate)
+
+      });
+
+      setMessage(
+        "Product created successfully"
+      );
+
+      await loadProducts();
+
+    } catch (error) {
+
+      console.error(error);
+
+      setMessage(
+        "Product creation failed"
+      );
+
+    } finally {
+
+      setSaving(false);
+
+    }
+
+  }
+
+  return (
+
+    <div className="inventory-container">
+
+      <div className="inventory-header">
+
+        <div>
+
+          <h1>
+            Inventory
+          </h1>
+
+          <p>
+            Manage products, stock and inventory intelligence.
+          </p>
+
+        </div>
+
+      </div>
+
+      <InventoryStats
+        products={products}
+      />
+
+      <div className="inventory-main-card">
+
+        <h2>
+          Add New Product
+        </h2>
+
+        <ProductForm
+          form={productForm}
+          loading={saving}
+          message={message}
+          handleChange={handleProductChange}
+          handleSubmit={handleProductSubmit}
+        />
+
+      </div>
+
+      <div className="inventory-main-card">
+
+        <h2>
+          Product Inventory
+        </h2>
+
+        {
+          loading ?
+
+            <p>
+              Loading inventory...
+            </p>
+
+            :
+
+            products.length === 0 ?
+
+              <p>
+                No products found.
+              </p>
+
+              :
+
+              <InventoryTable
+                products={products}
+              />
+
+        }
+
+      </div>
+
+      <InventoryReports
+        products={products}
+      />
+
+    </div>
+
+  );
+
+}
+
+export default Inventory;
+===== PRODUCT FORM =====
+interface Props {
+
+  form:any;
+
+  loading:boolean;
+
+  message:string;
+
+  handleChange:(
+    e:React.ChangeEvent<
+      HTMLInputElement |
+      HTMLSelectElement |
+      HTMLTextAreaElement
+    >
+  )=>void;
+
+  handleSubmit:(e:React.FormEvent)=>void;
+
+}
+
+
+
+
+
+function ProductForm({
+
+  form,
+
+  loading,
+
+  message,
+
+  handleChange,
+
+  handleSubmit
+
+}:Props){
+
+
+
+return (
+
+<form
+
+className="product-form"
+
+onSubmit={handleSubmit}
+
+>
+
+
+
+{/* PRODUCT INFORMATION */}
+
+<div className="product-section">
+
+
+<h3>
+Product Information
+</h3>
+
+
+
+<div className="product-grid">
+
+
+
+<div className="product-field">
+
+<label>
+Product Name
+</label>
+
+<input
+
+name="product_name"
+
+value={form.product_name}
+
+onChange={handleChange}
+
+placeholder="Enter product name"
+
+/>
+
+</div>
+
+
+
+
+
+
+<div className="product-field">
+
+<label>
+Brand
+</label>
+
+<input
+
+name="brand"
+
+value={form.brand}
+
+onChange={handleChange}
+
+placeholder="Brand name"
+
+/>
+
+</div>
+
+
+
+
+
+
+<div className="product-field">
+
+<label>
+Category
+</label>
+
+<input
+
+name="category"
+
+value={form.category}
+
+onChange={handleChange}
+
+placeholder="Category"
+
+/>
+
+</div>
+
+
+
+
+
+
+<div className="product-field">
+
+<label>
+Unit
+</label>
+
+<input
+
+name="unit"
+
+value={form.unit}
+
+onChange={handleChange}
+
+placeholder="Box / Kg / Piece"
+
+/>
+
+</div>
+
+
+
+</div>
+
+
+
+<div className="product-field">
+
+<label>
+Description
+</label>
+
+<textarea
+
+name="description"
+
+value={form.description}
+
+onChange={handleChange}
+
+placeholder="Product description"
+
+/>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* PRODUCT IDENTITY */}
+
+<div className="product-section">
+
+
+<h3>
+Product Identity
+</h3>
+
+
+
+<div className="product-grid">
+
+
+
+<div className="product-field">
+
+<label>
+SKU
+</label>
+
+<input
+
+name="sku"
+
+value={form.sku}
+
+onChange={handleChange}
+
+placeholder="Product SKU"
+
+/>
+
+</div>
+
+
+
+
+
+
+<div className="product-field">
+
+<label>
+Barcode
+</label>
+
+<input
+
+name="barcode"
+
+value={form.barcode}
+
+onChange={handleChange}
+
+placeholder="Barcode number"
+
+/>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* PRICING */}
+
+<div className="product-section">
+
+
+<h3>
+Pricing
+</h3>
+
+
+
+<div className="product-grid">
+
+
+
+<div className="product-field">
+
+<label>
+Purchase Price
+</label>
+
+<input
+
+type="number"
+
+name="purchase_price"
+
+value={form.purchase_price}
+
+onChange={handleChange}
+
+/>
+
+</div>
+
+
+
+
+
+
+<div className="product-field">
+
+<label>
+Selling Price
+</label>
+
+<input
+
+type="number"
+
+name="selling_price"
+
+value={form.selling_price}
+
+onChange={handleChange}
+
+/>
+
+</div>
+
+
+
+
+
+
+<div className="product-field">
+
+<label>
+Tax Rate %
+</label>
+
+<input
+
+type="number"
+
+name="tax_rate"
+
+value={form.tax_rate}
+
+onChange={handleChange}
+
+/>
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* INVENTORY RULES */}
+
+<div className="product-section">
+
+
+<h3>
+Inventory Control
+</h3>
+
+
+
+<div className="product-grid">
+
+
+
+<div className="product-field">
+
+<label>
+Minimum Stock
+</label>
+
+<input
+
+type="number"
+
+name="minimum_stock"
+
+value={form.minimum_stock}
+
+onChange={handleChange}
+
+/>
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<div className="checkbox-group">
+
+
+<label>
+
+<input
+
+type="checkbox"
+
+name="track_inventory"
+
+checked={form.track_inventory}
+
+onChange={handleChange}
+
+/>
+
+Track Inventory
+
+</label>
+
+
+
+
+
+<label>
+
+<input
+
+type="checkbox"
+
+name="batch_required"
+
+checked={form.batch_required}
+
+onChange={handleChange}
+
+/>
+
+Batch Tracking
+
+</label>
+
+
+
+
+
+<label>
+
+<input
+
+type="checkbox"
+
+name="expiry_required"
+
+checked={form.expiry_required}
+
+onChange={handleChange}
+
+/>
+
+Expiry Tracking
+
+</label>
+
+
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* IMAGE */}
+
+<div className="product-section">
+
+
+<h3>
+Product Image
+</h3>
+
+
+
+<div className="product-field">
+
+
+<label>
+Image URL
+</label>
+
+
+<input
+
+name="image_url"
+
+value={form.image_url}
+
+onChange={handleChange}
+
+placeholder="Product image URL"
+
+/>
+
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+
+{/* STATUS */}
+
+<div className="product-section">
+
+
+<h3>
+Status
+</h3>
+
+
+<select
+
+name="status"
+
+value={form.status}
+
+onChange={handleChange}
+
+>
+
+
+<option value="Active">
+Active
+</option>
+
+
+<option value="Inactive">
+Inactive
+</option>
+
+
+</select>
+
+
+</div>
+
+
+
+
+
+
+
+
+<button
+
+className="product-button"
+
+disabled={loading}
+
+>
+
+{
+
+loading
+
+?
+
+"Saving..."
+
+:
+
+"Create Product"
+
+}
+
+
+</button>
+
+
+
+
+
+
+{
+
+message &&
+
+<p className="product-message">
+
+{message}
+
+</p>
+
+}
+
+
+
+</form>
+
+);
+
+
+}
+
+
+
+export default ProductForm;
+===== PRODUCT SERVICE =====
+import { supabase } from "../../lib/supabase";
+
+
+export interface Product {
+
+  id?: string;
+
+  workspace_id: string;
+
+  product_name: string;
+
+  description?: string;
+
+  sku: string;
+
+  barcode?: string;
+
+  category?: string;
+
+  brand?: string;
+
+  unit?: string;
+
+  purchase_price: number;
+
+  selling_price: number;
+
+  tax_rate?: number;
+
+  minimum_stock: number;
+
+  image_url?: string;
+
+  track_inventory?: boolean;
+
+  batch_required?: boolean;
+
+  expiry_required?: boolean;
+
+  status: string;
+
+  created_at?: string;
+
+  updated_at?: string;
+
+}
+
+
+
+
+
+export const ProductService = {
+
+
+  async getProducts(workspaceId:string) {
+
+
+    const { data, error } = await supabase
+
+      .from("products")
+
+      .select("*")
+
+      .eq(
+        "workspace_id",
+        workspaceId
+      )
+
+      .order(
+        "created_at",
+        {
+          ascending:false
+        }
+      );
+
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    return data as Product[];
+
+
+  },
+
+
+
+
+
+
+  async createProduct(product:Product) {
+
+
+    const { data,error } = await supabase
+
+      .from("products")
+
+      .insert(product)
+
+      .select()
+
+      .single();
+
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    return data as Product;
+
+
+  },
+
+
+
+
+
+
+
+  async getProductCount(workspaceId:string){
+
+
+    const { count,error } = await supabase
+
+      .from("products")
+
+      .select("*",{
+        count:"exact",
+        head:true
+      })
+
+      .eq(
+        "workspace_id",
+        workspaceId
+      );
+
+
+
+    if(error){
+
+      throw error;
+
+    }
+
+
+    return count ?? 0;
+
+
+  }
+
+
+};
+===== BARCODE / SCANNER FILES =====

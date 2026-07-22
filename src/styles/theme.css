@@ -1,0 +1,57 @@
+:root {
+
+    /* APOTHIKA BRAND */
+
+    --apothika-primary: #0F766E;
+
+    --apothika-primary-dark: #115E59;
+
+    --apothika-secondary: #2563EB;
+
+
+    /* BACKGROUND */
+
+    --apothika-background: #F8FAFC;
+
+    --apothika-card: #FFFFFF;
+
+
+    /* TEXT */
+
+    --apothika-text: #0F172A;
+
+    --apothika-muted: #64748B;
+
+
+
+    /* STATUS COLORS */
+
+    --apothika-success: #16A34A;
+
+    --apothika-warning: #D97706;
+
+    --apothika-danger: #DC2626;
+
+
+
+    /* EFFECTS */
+
+    --apothika-radius: 18px;
+
+    --apothika-shadow:
+
+    0 10px 30px rgba(15,23,42,0.08);
+
+
+
+    /* GRADIENT */
+
+    --apothika-gradient:
+
+    linear-gradient(
+        135deg,
+        #0F766E,
+        #2563EB
+    );
+
+}

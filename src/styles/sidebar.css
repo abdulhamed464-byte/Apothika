@@ -1,0 +1,348 @@
+.sidebar {
+
+  width:260px;
+
+  min-height:100vh;
+
+  padding:30px 20px;
+
+  display:flex;
+
+  flex-direction:column;
+
+  position:relative;
+
+  transition:0.35s ease;
+
+
+  background:
+
+  linear-gradient(
+    180deg,
+    rgba(20,55,95,0.95),
+    rgba(10,25,55,0.95)
+  );
+
+
+  backdrop-filter:blur(25px);
+
+
+  border-right:
+
+  1px solid rgba(255,255,255,.18);
+
+}
+
+
+
+
+
+.sidebar.collapsed {
+
+  width:85px;
+
+  padding:30px 12px;
+
+}
+
+
+
+
+
+/* ARROW BUTTON */
+
+
+.sidebar-toggle {
+
+
+  position:absolute;
+
+
+  right:-14px;
+
+
+  top:80px;
+
+
+  width:30px;
+
+
+  height:30px;
+
+
+  border-radius:50%;
+
+
+  border:none;
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  justify-content:center;
+
+
+  cursor:pointer;
+
+
+  color:white;
+
+
+  background:
+
+
+  linear-gradient(
+    135deg,
+    #00ff99,
+    #009dff
+  );
+
+
+  box-shadow:
+
+
+  0 0 20px rgba(0,150,255,.5);
+
+
+  z-index:20;
+
+
+}
+
+
+
+
+
+
+/* LOGO */
+
+
+.sidebar-logo {
+
+
+  margin-bottom:40px;
+
+
+  text-align:left;
+
+
+}
+
+
+
+.sidebar-logo h2 {
+
+
+  margin:0;
+
+
+  font-size:30px;
+
+
+  letter-spacing:2px;
+
+
+  background:
+
+
+  linear-gradient(
+    90deg,
+    #00ff99,
+    #009dff
+  );
+
+
+  -webkit-background-clip:text;
+
+
+  color:transparent;
+
+
+}
+
+
+
+.sidebar-logo span {
+
+
+  color:#b9cbe0;
+
+
+  font-size:12px;
+
+
+}
+
+
+
+
+
+/* SECTIONS */
+
+
+.sidebar-section {
+
+
+  margin-bottom:28px;
+
+
+}
+
+
+
+.sidebar-section h4 {
+
+
+  color:#00ff99;
+
+
+  font-size:12px;
+
+
+  letter-spacing:2px;
+
+
+  margin-bottom:12px;
+
+
+}
+
+
+
+
+
+
+/* LINKS */
+
+
+.sidebar-link {
+
+
+  display:flex;
+
+
+  align-items:center;
+
+
+  gap:12px;
+
+
+  padding:12px;
+
+
+  margin-bottom:6px;
+
+
+  border-radius:12px;
+
+
+  color:#dce8f7;
+
+
+  text-decoration:none;
+
+
+  transition:.3s;
+
+
+}
+
+
+
+.sidebar-link:hover {
+
+
+  background:
+
+
+  rgba(0,150,255,.20);
+
+
+  color:white;
+
+
+}
+
+
+
+.sidebar-link.active {
+
+
+  background:
+
+
+  linear-gradient(
+    90deg,
+    rgba(0,255,150,.25),
+    rgba(0,150,255,.25)
+  );
+
+
+  color:white;
+
+
+}
+
+
+
+
+
+
+/* COLLAPSED ICON CENTER */
+
+
+.sidebar.collapsed .sidebar-link {
+
+
+  justify-content:center;
+
+
+}
+
+
+
+.sidebar.collapsed .sidebar-logo {
+
+
+  text-align:center;
+
+
+}
+
+
+
+
+
+
+/* BOTTOM */
+
+
+.sidebar-bottom {
+
+
+  margin-top:auto;
+
+
+  padding-top:25px;
+
+
+  border-top:
+
+
+  1px solid rgba(255,255,255,.15);
+
+
+}
+
+
+
+.logout {
+
+
+  color:#ff8895;
+
+
+}
