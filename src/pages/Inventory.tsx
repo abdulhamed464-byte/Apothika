@@ -576,17 +576,6 @@ function Inventory(){
 
 
 
-        <InventoryScannerButton
-
-          workspaceId={WORKSPACE_ID}
-
-          onProductFound={(product)=>{
-
-            setSelectedProduct(product);
-
-          }}
-
-        />
 
 
       </div>
@@ -661,29 +650,54 @@ function Inventory(){
       <div className="inventory-main-card">
 
 
-        <SearchFilterBar
+<div
+  style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    gap: "16px",
+    marginBottom: "20px",
+    flexWrap: "wrap"
+  }}
+>
 
-          search={search}
+  <div style={{ flex: 1 }}>
 
-          setSearch={setSearch}
+    <SearchFilterBar
 
-          category={category}
+      search={search}
 
-          setCategory={setCategory}
+      setSearch={setSearch}
 
-          brand={brand}
+      category={category}
 
-          setBrand={setBrand}
+      setCategory={setCategory}
 
-          stockStatus={stockStatus}
+      brand={brand}
 
-          setStockStatus={setStockStatus}
+      setBrand={setBrand}
 
-          categories={categories}
+      stockStatus={stockStatus}
 
-          brands={brands}
+      setStockStatus={setStockStatus}
 
-        />
+      categories={categories}
+
+      brands={brands}
+
+    />
+
+  </div>
+
+  <InventoryScannerButton
+
+    workspaceId={WORKSPACE_ID}
+
+    onProductFound={setSelectedProduct}
+
+  />
+
+</div>
 
 
 
