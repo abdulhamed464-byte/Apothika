@@ -1,6 +1,7 @@
 # APOTHIKA ERP
 ## Master Project Status
-Version: 2.0
+
+Version: 2.1  
 Last Updated: July 2026
 
 ====================================================
@@ -10,6 +11,7 @@ PROJECT VISION
 APOTHIKA is a cloud-based Multi-Domain Intelligent Business Operating System.
 
 Supported Domains:
+
 - Pharmacy
 - Retail
 - Supermarket
@@ -23,6 +25,7 @@ Supported Domains:
 - Future custom industries
 
 Architecture is modular.
+
 Every workspace loads modules based on selected industry.
 
 ====================================================
@@ -30,26 +33,33 @@ TECH STACK
 ====================================================
 
 Frontend
+
 - React
 - TypeScript
 - Vite
 
 Backend
+
 - Supabase
 
 Database
+
 - PostgreSQL
 
 Authentication
+
 - Supabase Auth
 
 Routing
+
 - React Router
 
 Icons
+
 - Lucide React
 
 Development
+
 - GitHub Codespaces
 
 ====================================================
@@ -58,54 +68,61 @@ CURRENT PROJECT STATUS
 
 Overall Progress
 
-Approximately 45%
+Approximately 55%
 
 Foundation is stable.
+
+Core ERP modules are being developed incrementally.
 
 ====================================================
 MODULE STATUS
 ====================================================
 
 Authentication
+
 ✅ Complete
 
-Includes
+Includes:
 
 - Registration
 - Login
 - Workspace detection
 - Session management
 
-Remaining
+Remaining:
 
 - Roles
 - Permissions
 - Password reset
 
+
 --------------------------------------------
+
 
 Workspace
 
 ✅ Mostly Complete
 
-Includes
+Includes:
 
 - Business mapping
 - Workspace loading
 - Organization relationship
 
-Remaining
+Remaining:
 
 - Multiple workspace switching
 - Admin management
 
+
 --------------------------------------------
+
 
 Dashboard
 
 ✅ Stable
 
-Completed
+Completed:
 
 - KPI Cards
 - Sales summary
@@ -113,18 +130,20 @@ Completed
 - Customer count
 - Low stock
 
-Remaining
+Remaining:
 
 - Profit analytics
 - AI dashboard
 
+
 --------------------------------------------
+
 
 Purchase Module
 
 ✅ Completed
 
-Features
+Features:
 
 - Purchase creation
 - Purchase history
@@ -139,66 +158,109 @@ Features
 - Inventory update
 - Stock entry creation
 
+
 Purchase Flow
 
 Supplier
+
 ↓
 
 Purchase
+
 ↓
 
 Purchase Items
+
 ↓
 
 Stock Entries
+
 ↓
 
 Inventory
 
+
 --------------------------------------------
+
 
 Inventory Module
 
-Current Phase
+## Inventory V3 Completed
 
-Product Master V2
+Product Master System
 
-Completed
+Completed:
 
 ✔ Product Service
+
 ✔ Product Form
-✔ Inventory table
-✔ Product statistics
-✔ Brand
-✔ Category
-✔ Unit
-✔ Description
-✔ Barcode field
-✔ SKU field
-✔ Tax
-✔ Image URL
-✔ Inventory settings
-✔ Batch flag
-✔ Expiry flag
 
-Remaining
+✔ Inventory Table
 
-- Barcode Scanner
-- Camera Scanner
-- SKU Generator
-- Barcode Lookup
-- Product Labels
-- Product Edit
-- Delete Product
+✔ Inventory KPI Cards
+
+✔ Inventory Reports
+
+✔ Brand Management
+
+✔ Category Management
+
+✔ Unit Management
+
+✔ Product Description
+
+✔ SKU System
+
+✔ SKU Generator
+
+✔ Barcode Generation
+
+✔ Barcode Validation
+
+✔ Barcode Scanner
+
+✔ Camera Scanner
+
+✔ Barcode Lookup
+
+✔ Barcode Labels
+
+✔ Product Image Upload
+
+✔ Image Preview
+
+✔ Search
+
+✔ Filters
+
+✔ Product Edit
+
+✔ Product Delete
+
+✔ Product Details View
+
+
+Current Phase:
+
+Inventory V4 - Stock Operations
+
+
+Next Features:
+
+- Stock In
+- Stock Out
 - Stock Adjustment
+- Stock Movement History
 - Batch Tracking
 - Expiry Tracking
+- Inventory Permissions
+
 
 ====================================================
 DATABASE
 ====================================================
 
-Completed Tables
+Completed Tables:
 
 - profiles
 - organizations
@@ -216,11 +278,12 @@ Completed Tables
 - sales
 - payment_status
 
+
 ====================================================
 CURRENT PRODUCT MODEL
 ====================================================
 
-Product contains
+Product contains:
 
 - Product Name
 - Description
@@ -239,11 +302,12 @@ Product contains
 - Expiry Required
 - Status
 
+
 ====================================================
 UI DESIGN
 ====================================================
 
-Theme
+Theme:
 
 Enterprise Glass ERP
 
@@ -255,7 +319,8 @@ Glass Cards
 
 Professional SaaS Layout
 
-Every module should follow
+
+Every module follows:
 
 Header
 
@@ -283,21 +348,28 @@ Details Modal
 
 Reports
 
+
 ====================================================
 CODING RULES
 ====================================================
 
-Always
+Always:
 
 ✔ Maintain architecture
+
 ✔ Never redesign working modules
+
 ✔ Keep database relationships intact
+
 ✔ Build after major changes
+
 ✔ Give complete replaceable files
 
-Never
+
+Never:
 
 ✘ Partial snippets unless requested
+
 
 ====================================================
 CURRENT STOPPING POINT
@@ -305,39 +377,14 @@ CURRENT STOPPING POINT
 
 Inventory Module
 
-Current focus
+Completed:
 
-Professional Barcode/SKU System
+Inventory V3 Professional Product Master
 
-Next milestone
+Next milestone:
 
-Inventory V3
+Inventory V4 Stock Management
 
-Features
-
-1.
-Camera Barcode Scanner
-
-2.
-Automatic SKU Generator
-
-3.
-Barcode Lookup
-
-4.
-GS1 Barcode Support
-
-5.
-Barcode Label Generator
-
-6.
-Scan to Fill Product Form
-
-7.
-Search Product by Barcode
-
-8.
-Duplicate Barcode Validation
 
 ====================================================
 AFTER INVENTORY
@@ -369,25 +416,21 @@ Business Intelligence Layer
 
 Deployment
 
+
 ====================================================
 LONG TERM GOAL
 ====================================================
 
 APOTHIKA Intelligence Layer
 
-Business Health Score
+- Business Health Score
+- Predictive Purchasing
+- Inventory Intelligence
+- Cash Flow Prediction
+- Business Recommendations
+- Decision Engine
+- Simulation Mode
 
-Predictive Purchasing
-
-Inventory Intelligence
-
-Cash Flow Prediction
-
-Business Recommendations
-
-Decision Engine
-
-Simulation Mode
 
 ====================================================
 NEXT CHAT PROMPT
@@ -399,41 +442,10 @@ Treat this as the latest project state.
 
 Do not restart architecture.
 
-Continue from Inventory V3.
+Continue from Inventory V4.
 
 Current task:
 
-Build Professional Barcode Scanner System integrated with Product Master.
+Build Stock Management System.
 
 Provide complete replaceable files only.
-
-## Inventory V3 Status
-
-Completed:
-
-- Product inventory module foundation completed
-- Product creation flow working
-- Product listing working
-- Inventory KPI cards working
-- Inventory reports working
-- SKU generation foundation added
-- SKU duplicate checking foundation added
-- Barcode generation foundation added
-- Barcode validation foundation added
-- Barcode utilities created
-- ZXing and JsBarcode dependencies installed
-
-Current working files:
-
-src/services/inventory/ProductService.ts
-src/services/inventory/SKUService.ts
-src/services/inventory/BarcodeService.ts
-src/utils/barcode/skuGenerator.ts
-src/utils/barcode/barcodeValidator.ts
-
-Next milestone:
-
-- Barcode camera scanning integration
-- Product image handling
-- Inventory search/filter
-- Stock movement workflow

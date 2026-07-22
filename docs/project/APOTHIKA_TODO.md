@@ -1,20 +1,33 @@
-Inventory
+# APOTHIKA TODO
 
-[x] Product Form
 
-[x] Product Table
+====================================================
+INVENTORY V4 - STOCK MANAGEMENT
+====================================================
 
-[x] Statistics
 
-[ ] Barcode Scanner
+[ ] Stock In Workflow
 
-[ ] SKU Generator
+[ ] Stock Out Workflow
 
-[ ] Barcode Labels
+[ ] Stock Adjustment
+
+[ ] Stock Movement History
+
+[ ] Batch Management
+
+[ ] Expiry Management
+
+[ ] Low Stock Alerts
+
+[ ] Inventory Permissions
+
 
 ---------------------------------
 
-Sales
+
+SALES
+
 
 [ ] Sales Invoice
 
@@ -22,9 +35,12 @@ Sales
 
 [ ] Payment
 
+
 ---------------------------------
 
-Customers
+
+CUSTOMERS
+
 
 [ ] CRUD
 
@@ -32,9 +48,23 @@ Customers
 
 [ ] Reports
 
+
 ---------------------------------
 
+
+SUPPLIERS
+
+
+[ ] CRUD
+
+[ ] Supplier Reports
+
+
+---------------------------------
+
+
 AI
+
 
 [ ] Business Health
 
@@ -42,12 +72,4 @@ AI
 
 [ ] Demand Forecast
 
-## Inventory Next Steps
-
-- Integrate BarcodeScanner component into ProductForm
-- Add camera barcode scanning
-- Add product editing
-- Add product deletion
-- Add inventory search
-- Add stock movement transactions
-- Add user/workspace inventory permissions
+[ ] Inventory Intelligence
