@@ -660,3 +660,26 @@ MISSION
 ====================================================
 
 Build APOTHIKA into a world-class cloud ERP platform with modular architecture, enterprise-grade code quality, and an AI-powered business intelligence layer.
+
+
+## Inventory Architecture
+
+Inventory module contains:
+
+ProductService
+- Product CRUD operations
+- Workspace based products
+
+SKUService
+- SKU generation
+- SKU uniqueness checking
+
+BarcodeService
+- Barcode generation
+- Barcode validation
+- Barcode type detection
+
+Future:
+- BarcodeScanner using ZXing
+- Warehouse stock tracking
+- Batch and expiry management
