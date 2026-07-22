@@ -4,6 +4,7 @@ import type { Product } from "../../services/inventory/ProductService";
 
 import { SKUService } from "../../services/inventory/SKUService";
 import { BarcodeService } from "../../services/inventory/BarcodeService";
+import ImageUploader from "../shared/ImageUploader";
 
 import BarcodeScanner from "./BarcodeScanner";
 
@@ -852,12 +853,6 @@ Expiry Tracking
 
 
 
-
-
-
-
-
-
 <div className="product-section">
 
 
@@ -866,29 +861,26 @@ Product Image
 </h3>
 
 
-<input
-
-className="product-field"
-
-name="image_url"
+<ImageUploader
 
 value={form.image_url ?? ""}
 
-onChange={handleChange}
+onChange={(url)=>{
 
-placeholder="Image URL"
+  updateField(
+
+    "image_url",
+
+    url
+
+  );
+
+}}
 
 />
 
 
 </div>
-
-
-
-
-
-
-
 
 
 <div className="product-section">

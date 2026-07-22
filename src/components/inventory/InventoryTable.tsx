@@ -48,6 +48,10 @@ function InventoryTable({
           <tr>
 
             <th>
+              Image
+            </th>
+
+            <th>
               Product
             </th>
 
@@ -78,7 +82,6 @@ function InventoryTable({
           </tr>
 
         </thead>
-
 
 
 
@@ -133,6 +136,52 @@ function InventoryTable({
                     key={product.id}
 
                   >
+
+
+
+                    <td>
+
+
+                      {
+
+                        product.image_url
+
+                        ?
+
+                        <img
+
+                          src={product.image_url}
+
+                          alt={product.product_name}
+
+                          style={{
+
+                            width:"45px",
+
+                            height:"45px",
+
+                            objectFit:"cover",
+
+                            borderRadius:"8px"
+
+                          }}
+
+                        />
+
+
+                        :
+
+                        <span>
+                          -
+                        </span>
+
+                      }
+
+
+                    </td>
+
+
+
 
 
                     <td>

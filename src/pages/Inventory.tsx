@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
 import { ProductService } from "../services/inventory/ProductService";
-import BarcodeLabel from "../components/inventory/BarcodeLabel";
 
 
 import type {
@@ -738,60 +737,86 @@ function Inventory(){
 
 
 
-      <InventorySidePanel />
-
-
-
+            <InventorySidePanel />
 
 
       {
+        selectedProduct &&
 
-       
-  selectedProduct &&
+        <div className="inventory-main-card">
 
-  <div className="inventory-main-card">
 
-    <h3>
-      Product Details
-    </h3>
+          <h3>
+            Product Details
+          </h3>
 
-    <p>
-      Name: {selectedProduct.product_name}
-    </p>
 
-    <p>
-      SKU: {selectedProduct.sku}
-    </p>
 
-    <p>
-      Barcode: {selectedProduct.barcode || "-"}
-    </p>
+          {
+            selectedProduct.image_url &&
 
-    {
-      selectedProduct.barcode &&
+            <img
 
-      <BarcodeLabel
+              src={selectedProduct.image_url}
 
-        productName={selectedProduct.product_name}
+              alt={selectedProduct.product_name}
 
-        sku={selectedProduct.sku}
+              style={{
 
-        barcode={selectedProduct.barcode}
+                width:"180px",
 
-        sellingPrice={selectedProduct.selling_price}
+                height:"180px",
 
-      />
+                objectFit:"cover",
 
-    }
+                borderRadius:"16px",
 
-    <button
-      onClick={()=>setSelectedProduct(null)}
-    >
-      Close
-    </button>
+                marginBottom:"15px"
 
-  </div>
-}
+              }}
+
+            />
+
+          }
+
+
+
+          <p>
+            Name: {selectedProduct.product_name}
+          </p>
+
+
+          <p>
+            SKU: {selectedProduct.sku}
+          </p>
+
+
+          <p>
+            Barcode: {selectedProduct.barcode || "-"}
+          </p>
+
+
+          <p>
+            Selling Price: ₹
+            {selectedProduct.selling_price}
+          </p>
+
+
+
+          <button
+
+            onClick={()=>setSelectedProduct(null)}
+
+          >
+
+            Close
+
+          </button>
+
+
+        </div>
+
+      }
 
 
     </div>
@@ -802,4 +827,3 @@ function Inventory(){
 
 
 export default Inventory;
-
