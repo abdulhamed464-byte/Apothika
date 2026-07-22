@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+
 import {
   BrowserMultiFormatReader
 } from "@zxing/browser";
@@ -7,33 +8,63 @@ import type {
   IScannerControls
 } from "@zxing/browser";
 
+import {
+  BarcodeLookupService
+} from "../../services/inventory/BarcodeLookupService";
+
+import type {
+  InventoryProduct
+} from "../../services/inventory/ProductService";
+
+
+
 interface Props {
 
-  onScan: (
-    barcode:string
-  ) => void;
 
-  onClose:() => void;
+  workspaceId?:string;
+
+
+  onScan?:(
+    barcode:string
+  )=>void;
+
+
+  onProductFound?:(
+    product:InventoryProduct
+  )=>void;
+
+
+  onClose:()=>void;
+
 
 }
 
 
 
+
+
 function BarcodeScanner({
 
+  workspaceId,
+
   onScan,
+
+  onProductFound,
 
   onClose
 
 }:Props){
 
 
+
   const videoRef =
     useRef<HTMLVideoElement | null>(null);
 
 
+
   const controlsRef =
     useRef<IScannerControls | null>(null);
+
 
 
   const [error,setError] =
@@ -41,65 +72,169 @@ function BarcodeScanner({
 
 
 
+  const [message,setMessage] =
+    useState("");
+
+
+
+  const [locked,setLocked] =
+    useState(false);
+
+
+
+
+
+
   useEffect(()=>{
 
 
-    const codeReader =
+    const reader =
       new BrowserMultiFormatReader();
 
 
 
-    async function startScanner(){
+
+
+    async function start(){
 
 
       try{
 
 
         const devices =
-          await BrowserMultiFormatReader.listVideoInputDevices();
+
+          await BrowserMultiFormatReader
+          .listVideoInputDevices();
 
 
 
-        if(devices.length === 0){
+
+
+        if(!devices.length){
+
 
           setError(
             "No camera found"
           );
 
+
           return;
+
 
         }
 
 
 
-        const selectedDevice =
-          devices[0].deviceId;
 
 
 
         controlsRef.current =
-          await codeReader.decodeFromVideoDevice(
 
-            selectedDevice,
+          await reader.decodeFromVideoDevice(
+
+            devices[0].deviceId,
 
             videoRef.current!,
 
-            (result)=>{
+            async(result)=>{
 
 
-              if(result){
+              if(result && !locked){
 
 
-                const value =
+
+                setLocked(true);
+
+
+
+                const barcode =
+
                   result.getText();
 
 
 
-                onScan(value);
+
+
+                // Keep old ProductForm support
+
+                if(onScan){
+
+
+                  onScan(barcode);
+
+
+                  stopScanner();
+
+                  return;
+
+
+                }
 
 
 
-                stopScanner();
+
+
+                // New lookup support
+
+                if(
+
+                  workspaceId &&
+
+                  onProductFound
+
+                ){
+
+
+                  setMessage(
+
+                    "Searching product..."
+
+                  );
+
+
+
+                  const product =
+
+                    await BarcodeLookupService
+                    .findByBarcode(
+
+                      workspaceId,
+
+                      barcode
+
+                    );
+
+
+
+
+                  if(product){
+
+
+                    onProductFound(
+
+                      product
+
+                    );
+
+
+                  }
+                  else{
+
+
+                    setMessage(
+
+                      "Product not found"
+
+                    );
+
+
+                    setLocked(false);
+
+
+                  }
+
+
+                }
 
 
               }
@@ -110,18 +245,17 @@ function BarcodeScanner({
           );
 
 
-
       }
       catch(error){
 
-        console.error(
-          "Barcode scanner error",
-          error
-        );
+
+        console.error(error);
 
 
         setError(
+
           "Camera permission denied"
+
         );
 
 
@@ -133,18 +267,25 @@ function BarcodeScanner({
 
 
 
-    startScanner();
+
+    start();
+
+
 
 
 
     return ()=>{
 
+
       stopScanner();
+
 
     };
 
 
-  },[]);
+  },[locked]);
+
+
 
 
 
@@ -153,13 +294,15 @@ function BarcodeScanner({
   function stopScanner(){
 
 
-    if(
-      controlsRef.current
-    ){
+
+    if(controlsRef.current){
+
 
       controlsRef.current.stop();
 
-      controlsRef.current = null;
+
+      controlsRef.current=null;
+
 
     }
 
@@ -170,29 +313,66 @@ function BarcodeScanner({
 
 
 
+
+
+
+  function close(){
+
+
+    stopScanner();
+
+
+    onClose();
+
+
+  }
+
+
+
+
+
+
   return (
 
     <div
+
       style={{
+
         position:"fixed",
+
         inset:0,
+
         background:"rgba(0,0,0,.75)",
+
         display:"flex",
-        alignItems:"center",
+
         justifyContent:"center",
+
+        alignItems:"center",
+
         zIndex:2000
+
       }}
+
     >
 
 
       <div
+
         style={{
+
           background:"#111827",
+
           padding:"25px",
+
           borderRadius:"20px",
+
           width:"420px",
+
           color:"white"
+
         }}
+
       >
 
 
@@ -204,27 +384,51 @@ function BarcodeScanner({
 
 
 
+
         <video
 
           ref={videoRef}
 
           style={{
+
             width:"100%",
-            borderRadius:"15px",
-            marginTop:"15px"
+
+            borderRadius:"15px"
+
           }}
 
         />
 
 
 
+
         {
+
+          message &&
+
+          <p>
+
+            {message}
+
+          </p>
+
+        }
+
+
+
+
+        {
+
           error &&
 
           <p
+
             style={{
+
               color:"#ef4444"
+
             }}
+
           >
 
             {error}
@@ -235,25 +439,27 @@ function BarcodeScanner({
 
 
 
+
         <button
 
-          onClick={()=>{
-
-            stopScanner();
-
-            onClose();
-
-          }}
+          onClick={close}
 
           style={{
+
             marginTop:"15px",
+
             width:"100%",
+
             padding:"12px",
-            borderRadius:"12px",
-            border:"none",
+
             background:"#10b981",
+
             color:"white",
-            cursor:"pointer"
+
+            border:"none",
+
+            borderRadius:"12px"
+
           }}
 
         >

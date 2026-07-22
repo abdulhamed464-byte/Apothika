@@ -1,18 +1,26 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ProductService } from "../services/inventory/ProductService";
+import BarcodeLabel from "../components/inventory/BarcodeLabel";
+
+
 import type {
   Product,
   InventoryProduct
 } from "../services/inventory/ProductService";
+
 
 import InventoryStats from "../components/inventory/InventoryStats";
 import InventoryTable from "../components/inventory/InventoryTable";
 import InventoryReports from "../components/inventory/InventoryReports";
 import ProductForm from "../components/inventory/ProductForm";
 import InventorySidePanel from "../components/inventory/InventorySidePanel";
+import SearchFilterBar from "../components/shared/SearchFilterBar";
+import InventoryScannerButton from "../components/inventory/InventoryScannerButton";
+
 
 import "../styles/inventory.css";
+
 
 
 const WORKSPACE_ID =
@@ -20,19 +28,22 @@ const WORKSPACE_ID =
 
 
 
-function Inventory() {
+function Inventory(){
 
 
   const [products,setProducts] =
     useState<InventoryProduct[]>([]);
 
 
+
   const [loading,setLoading] =
     useState(true);
 
 
+
   const [saving,setSaving] =
     useState(false);
+
 
 
   const [message,setMessage] =
@@ -41,13 +52,34 @@ function Inventory() {
 
 
   const [editingProduct,setEditingProduct] =
-    useState<Product | null>(null);
-
+    useState<Product|null>(null);
 
 
 
   const [selectedProduct,setSelectedProduct] =
-    useState<InventoryProduct | null>(null);
+    useState<InventoryProduct|null>(null);
+
+
+
+
+
+  const [search,setSearch] =
+    useState("");
+
+
+
+  const [category,setCategory] =
+    useState("");
+
+
+
+  const [brand,setBrand] =
+    useState("");
+
+
+
+  const [stockStatus,setStockStatus] =
+    useState("");
 
 
 
@@ -93,9 +125,7 @@ function Inventory() {
 
   async function loadProducts(){
 
-
     try{
-
 
       const data =
         await ProductService.getProducts(
@@ -109,23 +139,15 @@ function Inventory() {
     }
     catch(error){
 
-
-      console.error(
-        "Inventory loading failed",
-        error
-      );
-
+      console.error(error);
 
     }
     finally{
 
-
       setLoading(false);
-
 
     }
 
-
   }
 
 
@@ -134,35 +156,173 @@ function Inventory() {
 
 
 
-  function resetForm(){
+  const categories =
+    useMemo(()=>[
+
+      ...new Set(
+
+        products
+
+        .map(product=>product.category)
+
+        .filter(Boolean)
+
+      )
+
+    ] as string[],[products]);
 
 
-    setProductForm({
-
-      product_name:"",
-      description:"",
-      sku:"",
-      barcode:"",
-      category:"",
-      brand:"",
-      unit:"",
-      purchase_price:"",
-      selling_price:"",
-      tax_rate:"0",
-      minimum_stock:"",
-      image_url:"",
-      track_inventory:true,
-      batch_required:false,
-      expiry_required:false,
-      status:"Active"
-
-    });
 
 
-    setEditingProduct(null);
 
 
-  }
+  const brands =
+    useMemo(()=>[
+
+      ...new Set(
+
+        products
+
+        .map(product=>product.brand)
+
+        .filter(Boolean)
+
+      )
+
+    ] as string[],[products]);
+
+
+
+
+
+
+
+  const filteredProducts =
+
+    useMemo(()=>{
+
+
+      return products.filter(product=>{
+
+
+        const text =
+          search.toLowerCase();
+
+
+
+        const matchesSearch =
+
+          !text ||
+
+          product.product_name
+          .toLowerCase()
+          .includes(text)
+
+          ||
+
+          product.sku
+          .toLowerCase()
+          .includes(text)
+
+          ||
+
+          (product.barcode ?? "")
+          .toLowerCase()
+          .includes(text);
+
+
+
+
+
+        const matchesCategory =
+
+          !category ||
+
+          product.category === category;
+
+
+
+
+        const matchesBrand =
+
+          !brand ||
+
+          product.brand === brand;
+
+
+
+
+
+        const stock =
+
+          product.stock_entries?.reduce(
+
+            (total,entry)=>
+
+              total + Number(entry.quantity || 0),
+
+            0
+
+          ) || 0;
+
+
+
+
+        const matchesStock =
+
+          stockStatus === ""
+
+          ?
+
+          true
+
+          :
+
+          stockStatus === "low"
+
+          ?
+
+          stock <= Number(product.minimum_stock)
+
+          :
+
+          stock > Number(product.minimum_stock);
+
+
+
+
+
+        return (
+
+          matchesSearch &&
+
+          matchesCategory &&
+
+          matchesBrand &&
+
+          matchesStock
+
+        );
+
+
+      });
+
+
+    },[
+
+      products,
+
+      search,
+
+      category,
+
+      brand,
+
+      stockStatus
+
+    ]);
+
+
 
 
 
@@ -173,18 +333,26 @@ function Inventory() {
   function handleProductChange(
 
     e:React.ChangeEvent<
+
       HTMLInputElement |
+
       HTMLSelectElement |
+
       HTMLTextAreaElement
+
     >
 
   ){
 
 
     const {
+
       name,
+
       value,
+
       type
+
     } = e.target;
 
 
@@ -196,7 +364,7 @@ function Inventory() {
 
       [name]:
 
-      type === "checkbox"
+      type==="checkbox"
 
       ?
 
@@ -217,57 +385,22 @@ function Inventory() {
 
 
 
-
   function prepareEdit(
 
     product:InventoryProduct
 
   ){
 
-
     setEditingProduct(product);
-
 
 
     setProductForm({
 
-      product_name:product.product_name,
-
-      description:product.description ?? "",
-
-      sku:product.sku,
-
-      barcode:product.barcode ?? "",
-
-      category:product.category ?? "",
-
-      brand:product.brand ?? "",
-
-      unit:product.unit ?? "",
-
-      purchase_price:product.purchase_price,
-
-      selling_price:product.selling_price,
-
-      tax_rate:product.tax_rate ?? 0,
-
-      minimum_stock:product.minimum_stock,
-
-      image_url:product.image_url ?? "",
-
-      track_inventory:product.track_inventory ?? true,
-
-      batch_required:product.batch_required ?? false,
-
-      expiry_required:product.expiry_required ?? false,
-
-      status:product.status
+      ...product
 
     });
 
-
   }
-
 
 
 
@@ -281,9 +414,7 @@ function Inventory() {
 
   ){
 
-
     e.preventDefault();
-
 
 
     try{
@@ -297,7 +428,6 @@ function Inventory() {
 
 
         ...productForm,
-
 
         workspace_id:WORKSPACE_ID,
 
@@ -322,8 +452,6 @@ function Inventory() {
         )
 
       };
-
-
 
 
 
@@ -363,40 +491,28 @@ function Inventory() {
       }
 
 
-
-
-
-      resetForm();
-
+      setEditingProduct(null);
 
       await loadProducts();
-
 
 
     }
     catch(error){
 
-
       console.error(error);
-
 
       setMessage(
         "Product operation failed"
       );
 
-
     }
     finally{
 
-
       setSaving(false);
-
 
     }
 
-
   }
-
 
 
 
@@ -411,74 +527,22 @@ function Inventory() {
   ){
 
 
-    const confirmDelete =
-      window.confirm(
+    if(!window.confirm(
 
-        `Delete ${product.product_name}?`
+      `Delete ${product.product_name}?`
 
-      );
-
-
-
-    if(!confirmDelete){
-
-      return;
-
-    }
+    )) return;
 
 
 
-    try{
+    await ProductService.deleteProduct(
+
+      product.id!
+
+    );
 
 
-      await ProductService.deleteProduct(
-
-        product.id!
-
-      );
-
-
-      setMessage(
-        "Product deleted successfully"
-      );
-
-
-      await loadProducts();
-
-
-    }
-    catch(error){
-
-
-      console.error(error);
-
-
-      setMessage(
-        "Delete failed"
-      );
-
-
-    }
-
-
-  }
-
-
-
-
-
-
-
-
-  function handleViewProduct(
-
-    product:InventoryProduct
-
-  ){
-
-
-    setSelectedProduct(product);
-
+    await loadProducts();
 
   }
 
@@ -503,11 +567,27 @@ function Inventory() {
             Inventory
           </h1>
 
+
           <p>
             Manage products, stock and inventory intelligence.
           </p>
 
+
         </div>
+
+
+
+        <InventoryScannerButton
+
+          workspaceId={WORKSPACE_ID}
+
+          onProductFound={(product)=>{
+
+            setSelectedProduct(product);
+
+          }}
+
+        />
 
 
       </div>
@@ -541,6 +621,7 @@ function Inventory() {
             :
 
             "Add New Product"
+
           }
 
         </h2>
@@ -555,9 +636,17 @@ function Inventory() {
 
           message={message}
 
+          editing={!!editingProduct}
+
           handleChange={handleProductChange}
 
           handleSubmit={handleProductSubmit}
+
+          handleCancel={()=>{
+
+            setEditingProduct(null);
+
+          }}
 
         />
 
@@ -569,43 +658,70 @@ function Inventory() {
 
 
 
+
       <div className="inventory-main-card">
 
 
-        <h2>
-          Product Inventory
-        </h2>
+        <SearchFilterBar
+
+          search={search}
+
+          setSearch={setSearch}
+
+          category={category}
+
+          setCategory={setCategory}
+
+          brand={brand}
+
+          setBrand={setBrand}
+
+          stockStatus={stockStatus}
+
+          setStockStatus={setStockStatus}
+
+          categories={categories}
+
+          brands={brands}
+
+        />
+
+
 
 
 
         {
+
           loading
 
           ?
 
           <p>
-            Loading inventory...
+            Loading...
           </p>
 
 
           :
 
+
           <InventoryTable
 
-            products={products}
+            products={filteredProducts}
 
             onEdit={prepareEdit}
 
             onDelete={handleDeleteProduct}
 
-            onView={handleViewProduct}
+            onView={setSelectedProduct}
 
           />
+
 
         }
 
 
       </div>
+
 
 
 
@@ -622,7 +738,6 @@ function Inventory() {
 
 
 
-
       <InventorySidePanel />
 
 
@@ -630,42 +745,53 @@ function Inventory() {
 
 
       {
-        selectedProduct &&
 
-        <div className="inventory-main-card">
+       
+  selectedProduct &&
 
-          <h3>
-            Product Details
-          </h3>
+  <div className="inventory-main-card">
 
-          <p>
-            Name: {selectedProduct.product_name}
-          </p>
+    <h3>
+      Product Details
+    </h3>
 
-          <p>
-            SKU: {selectedProduct.sku}
-          </p>
+    <p>
+      Name: {selectedProduct.product_name}
+    </p>
 
-          <p>
-            Barcode: {selectedProduct.barcode || "-"}
-          </p>
+    <p>
+      SKU: {selectedProduct.sku}
+    </p>
 
-          <button
+    <p>
+      Barcode: {selectedProduct.barcode || "-"}
+    </p>
 
-            onClick={() =>
-              setSelectedProduct(null)
-            }
+    {
+      selectedProduct.barcode &&
 
-          >
+      <BarcodeLabel
 
-            Close
+        productName={selectedProduct.product_name}
 
-          </button>
+        sku={selectedProduct.sku}
 
-        </div>
+        barcode={selectedProduct.barcode}
 
-      }
+        sellingPrice={selectedProduct.selling_price}
 
+      />
+
+    }
+
+    <button
+      onClick={()=>setSelectedProduct(null)}
+    >
+      Close
+    </button>
+
+  </div>
+}
 
 
     </div>
@@ -676,3 +802,4 @@ function Inventory() {
 
 
 export default Inventory;
+

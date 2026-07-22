@@ -1,61 +1,94 @@
 import { supabase } from "../../lib/supabase";
 
 
+
 export interface Product {
 
-  id?: string;
 
-  workspace_id: string;
+  id?:string;
 
-  product_name: string;
 
-  description?: string;
+  workspace_id:string;
 
-  sku: string;
 
-  barcode?: string;
+  product_name:string;
 
-  category?: string;
 
-  brand?: string;
+  description?:string;
 
-  unit?: string;
 
-  purchase_price: number;
+  sku:string;
 
-  selling_price: number;
 
-  tax_rate?: number;
+  barcode?:string;
 
-  minimum_stock: number;
 
-  image_url?: string;
+  category?:string;
 
-  track_inventory?: boolean;
 
-  batch_required?: boolean;
+  brand?:string;
 
-  expiry_required?: boolean;
 
-  status: string;
+  unit?:string;
 
-  created_at?: string;
 
-  updated_at?: string;
+  purchase_price:number;
+
+
+  selling_price:number;
+
+
+  tax_rate?:number;
+
+
+  minimum_stock:number;
+
+
+  image_url?:string;
+
+
+  track_inventory?:boolean;
+
+
+  batch_required?:boolean;
+
+
+  expiry_required?:boolean;
+
+
+  status:string;
+
+
+  created_at?:string;
+
+
+  updated_at?:string;
+
 
 }
+
+
+
+
 
 
 
 export interface InventoryProduct extends Product {
 
-  stock_entries?: {
+
+  stock_entries?:{
+
 
     quantity:number;
 
   }[];
 
+
 }
+
+
+
+
 
 
 
@@ -63,33 +96,53 @@ export interface InventoryProduct extends Product {
 export const ProductService = {
 
 
+
   async getProducts(
+
     workspaceId:string
-  ):Promise<InventoryProduct[]> {
+
+  ){
 
 
-    const { data,error } = await supabase
+    const {data,error}=
+
+      await supabase
 
       .from("products")
 
       .select(`
+
         *,
+
         stock_entries(
+
           quantity
+
         )
+
       `)
 
       .eq(
+
         "workspace_id",
+
         workspaceId
+
       )
 
       .order(
+
         "created_at",
+
         {
+
           ascending:false
+
         }
+
       );
+
+
 
 
 
@@ -98,6 +151,7 @@ export const ProductService = {
       throw error;
 
     }
+
 
 
 
@@ -111,51 +165,90 @@ export const ProductService = {
 
 
 
-  async getProductById(
-    id:string
-  ):Promise<Product>{
-
-
-    const { data,error } = await supabase
-
-      .from("products")
-
-      .select("*")
-
-      .eq(
-        "id",
-        id
-      )
-
-      .single();
 
 
 
-    if(error){
+  async createProduct(
 
-      throw error;
+    product:Product
+
+  ){
+
+
+
+    const skuExists =
+
+      await this.skuExists(
+
+        product.workspace_id,
+
+        product.sku
+
+      );
+
+
+
+
+    if(skuExists){
+
+
+      throw new Error(
+
+        "SKU already exists"
+
+      );
+
 
     }
 
 
 
-    return data as Product;
-
-
-  },
 
 
 
 
+    if(product.barcode){
+
+
+      const barcodeExists =
+
+        await this.barcodeExists(
+
+          product.workspace_id,
+
+          product.barcode
+
+        );
 
 
 
-  async createProduct(
-    product:Product
-  ):Promise<Product>{
+      if(barcodeExists){
 
 
-    const { data,error } = await supabase
+        throw new Error(
+
+          "Barcode already exists"
+
+        );
+
+
+      }
+
+
+    }
+
+
+
+
+
+
+
+
+
+    const {data,error}=
+
+
+      await supabase
 
       .from("products")
 
@@ -167,6 +260,9 @@ export const ProductService = {
 
 
 
+
+
+
     if(error){
 
       throw error;
@@ -175,10 +271,12 @@ export const ProductService = {
 
 
 
+
     return data as Product;
 
 
   },
+
 
 
 
@@ -193,19 +291,117 @@ export const ProductService = {
 
     product:Partial<Product>
 
-  ):Promise<Product>{
+  ){
 
 
 
-    const { data,error } = await supabase
+    if(product.workspace_id && product.sku){
+
+
+
+      const skuExists =
+
+        await this.skuExistsExcept(
+
+          product.workspace_id,
+
+          product.sku,
+
+          id
+
+        );
+
+
+
+
+      if(skuExists){
+
+
+        throw new Error(
+
+          "SKU already exists"
+
+        );
+
+
+      }
+
+
+    }
+
+
+
+
+
+
+
+
+
+    if(
+
+      product.workspace_id &&
+
+      product.barcode
+
+    ){
+
+
+
+      const barcodeExists =
+
+        await this.barcodeExistsExcept(
+
+          product.workspace_id,
+
+          product.barcode,
+
+          id
+
+        );
+
+
+
+
+
+      if(barcodeExists){
+
+
+        throw new Error(
+
+          "Barcode already exists"
+
+        );
+
+
+      }
+
+
+
+    }
+
+
+
+
+
+
+
+
+
+    const {data,error}=
+
+
+      await supabase
 
       .from("products")
 
       .update(product)
 
       .eq(
+
         "id",
+
         id
+
       )
 
       .select()
@@ -214,11 +410,15 @@ export const ProductService = {
 
 
 
+
+
+
     if(error){
 
       throw error;
 
     }
+
 
 
 
@@ -234,21 +434,33 @@ export const ProductService = {
 
 
 
+
   async deleteProduct(
+
     id:string
+
   ){
 
 
-    const { error } = await supabase
+
+    const {error}=
+
+
+      await supabase
 
       .from("products")
 
       .delete()
 
       .eq(
+
         "id",
+
         id
+
       );
+
+
 
 
 
@@ -257,10 +469,6 @@ export const ProductService = {
       throw error;
 
     }
-
-
-
-    return true;
 
 
   },
@@ -274,26 +482,43 @@ export const ProductService = {
 
 
   async getProductCount(
+
     workspaceId:string
+
   ){
 
 
-    const { count,error } = await supabase
+    const {count,error}=
+
+
+      await supabase
 
       .from("products")
 
       .select(
+
         "*",
+
         {
+
           count:"exact",
+
           head:true
+
         }
+
       )
 
       .eq(
+
         "workspace_id",
+
         workspaceId
+
       );
+
+
+
 
 
 
@@ -322,12 +547,9 @@ export const ProductService = {
 
     workspaceId:string,
 
-    barcode:string,
-
-    excludeId?:string
+    barcode:string
 
   ){
-
 
 
     if(!barcode.trim()){
@@ -338,23 +560,37 @@ export const ProductService = {
 
 
 
-    const { data,error } = await supabase
+
+
+    const {data,error}=
+
+
+      await supabase
 
       .from("products")
 
       .select("id")
 
       .eq(
+
         "workspace_id",
+
         workspaceId
+
       )
 
       .eq(
+
         "barcode",
+
         barcode
+
       )
 
       .maybeSingle();
+
+
+
 
 
 
@@ -366,26 +602,80 @@ export const ProductService = {
 
 
 
-    if(!data){
+    return !!data;
 
-      return false;
+
+  },
+
+
+
+
+
+
+
+
+
+  async barcodeExistsExcept(
+
+    workspaceId:string,
+
+    barcode:string,
+
+    id:string
+
+  ){
+
+
+
+    const {data,error}=
+
+
+      await supabase
+
+      .from("products")
+
+      .select("id")
+
+      .eq(
+
+        "workspace_id",
+
+        workspaceId
+
+      )
+
+      .eq(
+
+        "barcode",
+
+        barcode
+
+      )
+
+      .neq(
+
+        "id",
+
+        id
+
+      )
+
+      .maybeSingle();
+
+
+
+
+
+
+    if(error){
+
+      throw error;
 
     }
 
 
 
-    if(
-      excludeId &&
-      data.id === excludeId
-    ){
-
-      return false;
-
-    }
-
-
-
-    return true;
+    return !!data;
 
 
   },
@@ -402,9 +692,7 @@ export const ProductService = {
 
     workspaceId:string,
 
-    sku:string,
-
-    excludeId?:string
+    sku:string
 
   ){
 
@@ -418,23 +706,37 @@ export const ProductService = {
 
 
 
-    const { data,error } = await supabase
+
+
+    const {data,error}=
+
+
+      await supabase
 
       .from("products")
 
       .select("id")
 
       .eq(
+
         "workspace_id",
+
         workspaceId
+
       )
 
       .eq(
+
         "sku",
+
         sku
+
       )
 
       .maybeSingle();
+
+
+
 
 
 
@@ -446,30 +748,83 @@ export const ProductService = {
 
 
 
-    if(!data){
+    return !!data;
 
-      return false;
+
+  },
+
+
+
+
+
+
+
+
+
+  async skuExistsExcept(
+
+    workspaceId:string,
+
+    sku:string,
+
+    id:string
+
+  ){
+
+
+
+    const {data,error}=
+
+
+      await supabase
+
+      .from("products")
+
+      .select("id")
+
+      .eq(
+
+        "workspace_id",
+
+        workspaceId
+
+      )
+
+      .eq(
+
+        "sku",
+
+        sku
+
+      )
+
+      .neq(
+
+        "id",
+
+        id
+
+      )
+
+      .maybeSingle();
+
+
+
+
+
+
+    if(error){
+
+      throw error;
 
     }
 
 
 
-    if(
-      excludeId &&
-      data.id === excludeId
-    ){
-
-      return false;
-
-    }
-
-
-
-    return true;
+    return !!data;
 
 
   }
-
 
 
 };
