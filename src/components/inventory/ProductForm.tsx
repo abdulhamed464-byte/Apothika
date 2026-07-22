@@ -1,31 +1,54 @@
 import { useMemo } from "react";
 
 import type { Product } from "../../services/inventory/ProductService";
+
 import { SKUService } from "../../services/inventory/SKUService";
 import { BarcodeService } from "../../services/inventory/BarcodeService";
 
 
+
 interface Props {
+
 
   form: Product;
 
-  loading: boolean;
 
-  message: string;
+  loading:boolean;
 
-  handleChange: (
-    e: React.ChangeEvent<
+
+  message:string;
+
+
+  editing?:boolean;
+
+
+  handleChange:(
+
+    e:
+    React.ChangeEvent<
       HTMLInputElement |
       HTMLSelectElement |
       HTMLTextAreaElement
     >
-  ) => void;
 
-  handleSubmit: (
-    e: React.FormEvent
-  ) => void;
+  )=>void;
+
+
+
+  handleSubmit:(
+
+    e:React.FormEvent
+
+  )=>void;
+
+
+
+  handleCancel?:()=>void;
+
 
 }
+
+
 
 
 
@@ -37,15 +60,22 @@ function ProductForm({
 
   message,
 
+  editing=false,
+
   handleChange,
 
-  handleSubmit
+  handleSubmit,
 
-}: Props) {
+  handleCancel
+
+}:Props){
+
+
 
 
 
 const barcodeValid = useMemo(()=>{
+
 
   if(!form.barcode){
 
@@ -53,15 +83,23 @@ const barcodeValid = useMemo(()=>{
 
   }
 
+
   return BarcodeService.validate(
+
     form.barcode
+
   );
+
 
 },[form.barcode]);
 
 
 
+
+
+
 const barcodeLabel = useMemo(()=>{
+
 
   if(!form.barcode){
 
@@ -69,73 +107,111 @@ const barcodeLabel = useMemo(()=>{
 
   }
 
+
   return BarcodeService.getType(
+
     form.barcode
+
   );
+
 
 },[form.barcode]);
 
 
 
 
+
+
+
+
 function updateField(
+
   name:string,
+
   value:string
+
 ){
 
-handleChange({
 
-target:{
+  handleChange({
 
-name,
+    target:{
 
-value,
+      name,
 
-type:"text"
+      value,
+
+      type:"text"
+
+    }
+
+  } as React.ChangeEvent<HTMLInputElement>);
+
 
 }
 
-} as React.ChangeEvent<HTMLInputElement>);
 
-}
+
+
 
 
 
 
 function generateSKU(){
 
-const sku =
-SKUService.create(
 
-form.category ?? "",
+  const sku =
 
-form.brand ?? ""
+    SKUService.create(
 
-);
+      form.category ?? "",
+
+      form.brand ?? ""
+
+    );
 
 
-updateField(
-"sku",
-sku
-);
+
+  updateField(
+
+    "sku",
+
+    sku
+
+  );
+
 
 }
+
+
+
 
 
 
 
 function generateBarcode(){
 
-const barcode =
-BarcodeService.generate();
+
+  const barcode =
+
+    BarcodeService.generate();
 
 
-updateField(
-"barcode",
-barcode
-);
+
+  updateField(
+
+    "barcode",
+
+    barcode
+
+  );
+
 
 }
+
+
+
+
 
 
 
@@ -151,11 +227,15 @@ onSubmit={handleSubmit}
 
 
 
+
+
 <div className="product-section">
+
 
 <h3>
 Product Information
 </h3>
+
 
 
 <div className="product-grid">
@@ -163,9 +243,11 @@ Product Information
 
 <div className="product-field">
 
+
 <label>
 Product Name
 </label>
+
 
 <input
 
@@ -177,15 +259,20 @@ onChange={handleChange}
 
 />
 
+
 </div>
+
+
 
 
 
 <div className="product-field">
 
+
 <label>
 Brand
 </label>
+
 
 <input
 
@@ -197,15 +284,21 @@ onChange={handleChange}
 
 />
 
+
 </div>
+
+
+
 
 
 
 <div className="product-field">
 
+
 <label>
 Category
 </label>
+
 
 <input
 
@@ -217,15 +310,21 @@ onChange={handleChange}
 
 />
 
+
 </div>
+
+
+
 
 
 
 <div className="product-field">
 
+
 <label>
 Unit
 </label>
+
 
 <input
 
@@ -237,14 +336,19 @@ onChange={handleChange}
 
 />
 
+
 </div>
 
 
+
 </div>
+
+
 
 
 
 <div className="product-field">
+
 
 <label>
 Description
@@ -271,26 +375,39 @@ onChange={handleChange}
 
 
 
+
+
+
 <div className="product-section">
+
 
 <h3>
 Product Identity
 </h3>
 
 
+
 <div className="product-grid">
 
 
+
+
+
 <div className="product-field">
+
 
 <label>
 SKU
 </label>
 
 
+
 <div style={{
+
 display:"flex",
+
 gap:"10px"
+
 }}>
 
 
@@ -320,7 +437,11 @@ Generate
 
 </div>
 
+
 </div>
+
+
+
 
 
 
@@ -328,14 +449,19 @@ Generate
 
 <div className="product-field">
 
+
 <label>
 Barcode
 </label>
 
 
+
 <div style={{
+
 display:"flex",
+
 gap:"10px"
+
 }}>
 
 
@@ -367,6 +493,7 @@ Generate
 
 
 
+
 {
 
 form.barcode &&
@@ -391,6 +518,7 @@ barcodeValid
 
 >
 
+
 {
 
 barcodeValid
@@ -405,11 +533,16 @@ barcodeValid
 
 }
 
+
 </small>
 
 }
 
 
+</div>
+
+
+
 
 </div>
 
@@ -417,7 +550,7 @@ barcodeValid
 </div>
 
 
-</div>
+
 
 
 
@@ -426,19 +559,24 @@ barcodeValid
 
 <div className="product-section">
 
+
 <h3>
 Pricing
 </h3>
 
 
+
 <div className="product-grid">
+
 
 
 <div className="product-field">
 
+
 <label>
 Purchase Price
 </label>
+
 
 <input
 
@@ -452,15 +590,21 @@ onChange={handleChange}
 
 />
 
+
 </div>
+
+
+
 
 
 
 <div className="product-field">
 
+
 <label>
 Selling Price
 </label>
+
 
 <input
 
@@ -474,15 +618,21 @@ onChange={handleChange}
 
 />
 
+
 </div>
+
+
+
 
 
 
 <div className="product-field">
 
+
 <label>
 Tax Rate %
 </label>
+
 
 <input
 
@@ -496,13 +646,19 @@ onChange={handleChange}
 
 />
 
+
+</div>
+
+
+
 </div>
 
 
 </div>
 
 
-</div>
+
+
 
 
 
@@ -510,16 +666,20 @@ onChange={handleChange}
 
 <div className="product-section">
 
+
 <h3>
 Inventory Control
 </h3>
 
 
+
 <div className="product-field">
+
 
 <label>
 Minimum Stock
 </label>
+
 
 <input
 
@@ -538,7 +698,10 @@ onChange={handleChange}
 
 
 
+
+
 <div className="checkbox-group">
+
 
 
 <label>
@@ -558,6 +721,8 @@ onChange={handleChange}
 Track Inventory
 
 </label>
+
+
 
 
 
@@ -581,6 +746,8 @@ Batch Tracking
 
 
 
+
+
 <label>
 
 <input
@@ -600,10 +767,14 @@ Expiry Tracking
 </label>
 
 
+
 </div>
 
 
 </div>
+
+
+
 
 
 
@@ -611,6 +782,7 @@ Expiry Tracking
 
 
 <div className="product-section">
+
 
 <h3>
 Product Image
@@ -638,11 +810,17 @@ placeholder="Image URL"
 
 
 
+
+
+
+
 <div className="product-section">
+
 
 <h3>
 Status
 </h3>
+
 
 
 <select
@@ -675,6 +853,18 @@ Inactive
 
 
 
+
+
+
+<div style={{
+
+display:"flex",
+
+gap:"12px"
+
+}}>
+
+
 <button
 
 className="product-button"
@@ -693,12 +883,50 @@ loading
 
 :
 
+editing
+
+?
+
+"Update Product"
+
+:
+
 "Create Product"
 
 }
 
 
 </button>
+
+
+
+
+
+{
+
+editing &&
+
+<button
+
+type="button"
+
+onClick={handleCancel}
+
+>
+
+Cancel
+
+</button>
+
+}
+
+
+
+</div>
+
+
+
+
 
 
 

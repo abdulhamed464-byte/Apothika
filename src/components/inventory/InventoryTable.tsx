@@ -1,6 +1,21 @@
+import type { InventoryProduct } from "../../services/inventory/ProductService";
+
+
 interface Props {
 
-  products:any[];
+  products: InventoryProduct[];
+
+  onEdit?: (
+    product: InventoryProduct
+  ) => void;
+
+  onDelete?: (
+    product: InventoryProduct
+  ) => void;
+
+  onView?: (
+    product: InventoryProduct
+  ) => void;
 
 }
 
@@ -8,212 +23,318 @@ interface Props {
 
 function InventoryTable({
 
-  products
+  products,
 
-}:Props){
+  onEdit,
 
+  onDelete,
 
+  onView
 
-return(
+}: Props) {
 
-<div className="inventory-table-wrapper">
 
 
-<table className="inventory-table">
+  return (
 
+    <div className="inventory-table-wrapper">
 
-<thead>
 
-<tr>
+      <table className="inventory-table">
 
-<th>
-Product
-</th>
 
-<th>
-SKU
-</th>
+        <thead>
 
-<th>
-Category
-</th>
+          <tr>
 
-<th>
-Stock
-</th>
+            <th>
+              Product
+            </th>
 
-<th>
-Value
-</th>
+            <th>
+              SKU
+            </th>
 
-<th>
-Status
-</th>
+            <th>
+              Category
+            </th>
 
-</tr>
+            <th>
+              Stock
+            </th>
 
-</thead>
+            <th>
+              Value
+            </th>
 
+            <th>
+              Status
+            </th>
 
+            <th>
+              Actions
+            </th>
 
+          </tr>
 
-<tbody>
+        </thead>
 
 
-{
 
-products.map(
 
-(product:any)=>{
+        <tbody>
 
 
-const stock =
+          {
 
-product.stock_entries?.reduce(
+            products.map(
 
-(total:number,entry:any)=>
+              (product) => {
 
-total +
 
-Number(entry.quantity || 0),
+                const stock =
 
-0
+                  product.stock_entries?.reduce(
 
-)
+                    (
+                      total,
+                      entry
+                    ) =>
 
-||0;
+                      total +
 
+                      Number(
+                        entry.quantity || 0
+                      ),
 
+                    0
 
-const value =
+                  ) || 0;
 
-stock *
 
-Number(product.purchase_price || 0);
 
 
+                const value =
 
+                  stock *
 
-return(
+                  Number(
+                    product.purchase_price || 0
+                  );
 
 
-<tr key={product.id}>
 
 
-<td>
 
-{product.product_name}
+                return (
 
-</td>
+                  <tr
 
+                    key={product.id}
 
+                  >
 
-<td>
 
-{product.sku}
+                    <td>
 
-</td>
+                      {product.product_name}
 
+                    </td>
 
 
-<td>
 
-{product.category || "-"}
 
-</td>
+                    <td>
 
+                      {product.sku || "-"}
 
+                    </td>
 
 
-<td>
 
-{stock}
 
-</td>
+                    <td>
 
+                      {product.category || "-"}
 
+                    </td>
 
 
-<td>
 
-₹{value.toLocaleString()}
 
-</td>
+                    <td>
 
+                      {stock}
 
+                    </td>
 
 
 
-<td>
 
+                    <td>
 
-<span
+                      ₹
+                      {value.toLocaleString()}
 
-className={
+                    </td>
 
-stock <= Number(product.minimum_stock)
 
-?
 
-"inventory-low"
 
-:
+                    <td>
 
-"inventory-good"
 
-}
+                      <span
 
->
+                        className={
 
+                          stock <= Number(
+                            product.minimum_stock
+                          )
 
-{
+                          ?
 
-stock <= Number(product.minimum_stock)
+                          "inventory-low"
 
-?
+                          :
 
-"Low Stock"
+                          "inventory-good"
 
-:
+                        }
 
-"Healthy"
+                      >
 
-}
 
+                        {
 
-</span>
+                          stock <= Number(
+                            product.minimum_stock
+                          )
 
+                          ?
 
-</td>
+                          "Low Stock"
 
+                          :
 
+                          "Healthy"
 
+                        }
 
-</tr>
 
+                      </span>
 
-);
 
+                    </td>
 
-}
 
 
-)
 
+                    <td>
 
-}
 
+                      <div
 
+                        style={{
 
-</tbody>
+                          display:"flex",
 
+                          gap:"8px"
 
-</table>
+                        }}
 
+                      >
 
-</div>
 
-);
+                        <button
+
+                          type="button"
+
+                          onClick={() =>
+                            onView?.(product)
+                          }
+
+                        >
+
+                          View
+
+                        </button>
+
+
+
+
+
+                        <button
+
+                          type="button"
+
+                          onClick={() =>
+                            onEdit?.(product)
+                          }
+
+                        >
+
+                          Edit
+
+                        </button>
+
+
+
+
+
+                        <button
+
+                          type="button"
+
+                          onClick={() =>
+                            onDelete?.(product)
+                          }
+
+                          style={{
+
+                            background:"#ef4444",
+
+                            color:"#ffffff"
+
+                          }}
+
+                        >
+
+                          Delete
+
+                        </button>
+
+
+
+                      </div>
+
+
+                    </td>
+
+
+
+
+                  </tr>
+
+                );
+
+
+              }
+
+            )
+
+          }
+
+
+        </tbody>
+
+
+      </table>
+
+
+    </div>
+
+  );
 
 
 }
