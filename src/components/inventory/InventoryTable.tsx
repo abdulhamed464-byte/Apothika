@@ -9,9 +9,11 @@ interface Props {
     product: InventoryProduct
   ) => void;
 
+
   onDelete?: (
     product: InventoryProduct
   ) => void;
+
 
   onView?: (
     product: InventoryProduct
@@ -31,363 +33,352 @@ function InventoryTable({
 
   onView
 
-}: Props) {
+}:Props){
 
 
+return (
 
-  return (
+<div className="inventory-table-wrapper">
 
-    <div className="inventory-table-wrapper">
 
+<table className="inventory-table">
 
-      <table className="inventory-table">
 
+<thead>
 
-        <thead>
+<tr>
 
-          <tr>
+<th>
+Image
+</th>
 
-            <th>
-              Image
-            </th>
+<th>
+Product
+</th>
 
-            <th>
-              Product
-            </th>
+<th>
+SKU
+</th>
 
-            <th>
-              SKU
-            </th>
+<th>
+Category
+</th>
 
-            <th>
-              Category
-            </th>
+<th>
+Stock
+</th>
 
-            <th>
-              Stock
-            </th>
+<th>
+Value
+</th>
 
-            <th>
-              Value
-            </th>
+<th>
+Status
+</th>
 
-            <th>
-              Status
-            </th>
+<th>
+Actions
+</th>
 
-            <th>
-              Actions
-            </th>
+</tr>
 
-          </tr>
+</thead>
 
-        </thead>
 
 
+<tbody>
 
-        <tbody>
 
+{
 
-          {
+products.map((product)=>{
 
-            products.map(
 
-              (product) => {
+const stock =
 
+product.stock_entries?.reduce(
 
-                const stock =
+(total,item)=>
 
-                  product.stock_entries?.reduce(
+total + Number(item.quantity || 0),
 
-                    (
-                      total,
-                      entry
-                    ) =>
+0
 
-                      total +
+) || 0;
 
-                      Number(
-                        entry.quantity || 0
-                      ),
 
-                    0
 
-                  ) || 0;
+const value =
 
+stock *
 
+Number(product.purchase_price || 0);
 
 
-                const value =
 
-                  stock *
+const lowStock =
 
-                  Number(
-                    product.purchase_price || 0
-                  );
+stock <= Number(product.minimum_stock);
 
 
 
+return (
 
+<tr key={product.id}>
 
-                return (
 
-                  <tr
+<td>
 
-                    key={product.id}
+{
 
-                  >
+product.image_url ?
 
+<img
 
+src={product.image_url}
 
-                    <td>
+alt={product.product_name}
 
+style={{
 
-                      {
+width:"45px",
 
-                        product.image_url
+height:"45px",
 
-                        ?
+objectFit:"cover",
 
-                        <img
+borderRadius:"8px"
 
-                          src={product.image_url}
+}}
 
-                          alt={product.product_name}
+/>
 
-                          style={{
+:
 
-                            width:"45px",
+"-"
 
-                            height:"45px",
+}
 
-                            objectFit:"cover",
+</td>
 
-                            borderRadius:"8px"
 
-                          }}
 
-                        />
 
+<td>
 
-                        :
+{product.product_name}
 
-                        <span>
-                          -
-                        </span>
+</td>
 
-                      }
 
 
-                    </td>
 
+<td>
 
+{product.sku || "-"}
 
+</td>
 
 
-                    <td>
 
-                      {product.product_name}
 
-                    </td>
+<td>
 
+{product.category || "-"}
 
+</td>
 
 
-                    <td>
 
-                      {product.sku || "-"}
 
-                    </td>
+<td>
 
+{stock}
 
+</td>
 
 
-                    <td>
 
-                      {product.category || "-"}
 
-                    </td>
+<td>
 
+₹{value.toLocaleString()}
 
+</td>
 
 
-                    <td>
 
-                      {stock}
 
-                    </td>
+<td>
 
+<span
 
+className={
 
+lowStock
 
-                    <td>
+?
 
-                      ₹
-                      {value.toLocaleString()}
+"inventory-low"
 
-                    </td>
+:
 
+"inventory-good"
 
+}
 
+>
 
-                    <td>
+{
 
+lowStock
 
-                      <span
+?
 
-                        className={
+"Low Stock"
 
-                          stock <= Number(
-                            product.minimum_stock
-                          )
+:
 
-                          ?
+product.status
 
-                          "inventory-low"
+}
 
-                          :
+</span>
 
-                          "inventory-good"
+</td>
 
-                        }
 
-                      >
 
 
-                        {
 
-                          stock <= Number(
-                            product.minimum_stock
-                          )
+<td>
 
-                          ?
 
-                          "Low Stock"
+<div
 
-                          :
+style={{
 
-                          "Healthy"
+display:"flex",
 
-                        }
+gap:"8px"
 
+}}
 
-                      </span>
+>
 
 
-                    </td>
 
+<button
 
+type="button"
 
+onClick={()=>onView?.(product)}
 
-                    <td>
+>
 
+View
 
-                      <div
+</button>
 
-                        style={{
 
-                          display:"flex",
 
-                          gap:"8px"
 
-                        }}
+<button
 
-                      >
+type="button"
 
+onClick={()=>onEdit?.(product)}
 
-                        <button
+>
 
-                          type="button"
+Edit
 
-                          onClick={() =>
-                            onView?.(product)
-                          }
+</button>
 
-                        >
 
-                          View
 
-                        </button>
 
+{
 
+product.status !== "Archived"
 
+?
 
+<button
 
-                        <button
+type="button"
 
-                          type="button"
+onClick={()=>onDelete?.(product)}
 
-                          onClick={() =>
-                            onEdit?.(product)
-                          }
+style={{
 
-                        >
+background:"#ef4444",
 
-                          Edit
+color:"white"
 
-                        </button>
+}}
 
+>
 
+Archive
 
+</button>
 
 
-                        <button
+:
 
-                          type="button"
+<span
 
-                          onClick={() =>
-                            onDelete?.(product)
-                          }
+style={{
 
-                          style={{
+color:"#f59e0b",
 
-                            background:"#ef4444",
+fontWeight:"600"
 
-                            color:"#ffffff"
+}}
 
-                          }}
+>
 
-                        >
+Archived
 
-                          Delete
+</span>
 
-                        </button>
+}
 
 
 
-                      </div>
+</div>
 
 
-                    </td>
+</td>
 
 
 
+</tr>
 
-                  </tr>
 
-                );
+);
 
 
-              }
-
-            )
-
-          }
-
-
-        </tbody>
-
-
-      </table>
-
-
-    </div>
-
-  );
+})
 
 
 }
 
+
+</tbody>
+
+
+</table>
+
+
+</div>
+
+
+);
+
+
+}
 
 
 export default InventoryTable;

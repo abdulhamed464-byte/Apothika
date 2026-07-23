@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 
 import { ProductService } from "../services/inventory/ProductService";
 
-
 import type {
   Product,
   InventoryProduct
@@ -17,685 +16,538 @@ import InventorySidePanel from "../components/inventory/InventorySidePanel";
 import SearchFilterBar from "../components/shared/SearchFilterBar";
 import InventoryScannerButton from "../components/inventory/InventoryScannerButton";
 
-
 import "../styles/inventory.css";
 
 
-
 const WORKSPACE_ID =
-  "4e24cab5-087c-4004-8d80-1098dbbe3ade";
+"4e24cab5-087c-4004-8d80-1098dbbe3ade";
 
 
 
 function Inventory(){
 
 
-  const [products,setProducts] =
-    useState<InventoryProduct[]>([]);
+const [products,setProducts] =
+useState<InventoryProduct[]>([]);
 
 
+const [loading,setLoading] =
+useState(true);
 
-  const [loading,setLoading] =
-    useState(true);
 
+const [saving,setSaving] =
+useState(false);
 
 
-  const [saving,setSaving] =
-    useState(false);
+const [message,setMessage] =
+useState("");
 
 
+const [editingProduct,setEditingProduct] =
+useState<Product|null>(null);
 
-  const [message,setMessage] =
-    useState("");
 
+const [selectedProduct,setSelectedProduct] =
+useState<InventoryProduct|null>(null);
 
 
-  const [editingProduct,setEditingProduct] =
-    useState<Product|null>(null);
 
+const [search,setSearch] =
+useState("");
 
+const [category,setCategory] =
+useState("");
 
-  const [selectedProduct,setSelectedProduct] =
-    useState<InventoryProduct|null>(null);
+const [brand,setBrand] =
+useState("");
 
+const [stockStatus,setStockStatus] =
+useState("");
 
+const [status,setStatus] =
+useState("Active");
 
 
 
-  const [search,setSearch] =
-    useState("");
+const [productForm,setProductForm] =
+useState<any>({
 
+product_name:"",
+description:"",
+sku:"",
+barcode:"",
+category:"",
+brand:"",
+unit:"",
+purchase_price:"",
+selling_price:"",
+tax_rate:"0",
+minimum_stock:"",
+image_url:"",
+track_inventory:true,
+batch_required:false,
+expiry_required:false,
+status:"Active"
 
+});
 
-  const [category,setCategory] =
-    useState("");
 
 
 
-  const [brand,setBrand] =
-    useState("");
 
+useEffect(()=>{
 
+loadProducts();
 
-  const [stockStatus,setStockStatus] =
-    useState("");
+},[]);
 
 
 
 
 
-  const [productForm,setProductForm] =
-    useState<any>({
+async function loadProducts(){
 
-      product_name:"",
-      description:"",
-      sku:"",
-      barcode:"",
-      category:"",
-      brand:"",
-      unit:"",
-      purchase_price:"",
-      selling_price:"",
-      tax_rate:"0",
-      minimum_stock:"",
-      image_url:"",
-      track_inventory:true,
-      batch_required:false,
-      expiry_required:false,
-      status:"Active"
+try{
 
-    });
+const data =
+await ProductService.getProducts(
+WORKSPACE_ID
+);
 
 
+setProducts(data);
 
 
+}
 
+catch(error){
 
-  useEffect(()=>{
+console.error(
+"Inventory loading error",
+error
+);
 
-    loadProducts();
+}
 
-  },[]);
+finally{
 
+setLoading(false);
 
+}
 
+}
 
 
 
-  async function loadProducts(){
 
-    try{
 
-      const data =
-        await ProductService.getProducts(
-          WORKSPACE_ID
-        );
 
 
-      setProducts(data);
+const categories =
+useMemo(()=>{
 
+return [
 
-    }
-    catch(error){
+...new Set(
 
-      console.error(error);
+products
 
-    }
-    finally{
+.map(
+p=>p.category
+)
 
-      setLoading(false);
+.filter(Boolean)
 
-    }
+)
 
-  }
+] as string[];
 
+},[products]);
 
 
 
 
 
+const brands =
+useMemo(()=>{
 
-  const categories =
-    useMemo(()=>[
+return [
 
-      ...new Set(
+...new Set(
 
-        products
+products
 
-        .map(product=>product.category)
+.map(
+p=>p.brand
+)
 
-        .filter(Boolean)
+.filter(Boolean)
 
-      )
+)
 
-    ] as string[],[products]);
+] as string[];
 
+},[products]);
 
 
 
 
 
-  const brands =
-    useMemo(()=>[
 
-      ...new Set(
 
-        products
 
-        .map(product=>product.brand)
+const filteredProducts =
+useMemo(()=>{
 
-        .filter(Boolean)
 
-      )
+return products.filter(product=>{
 
-    ] as string[],[products]);
 
+const text =
+search.toLowerCase();
 
 
+const matchesSearch =
 
+!text ||
 
+product.product_name
+.toLowerCase()
+.includes(text)
 
+||
 
-  const filteredProducts =
+product.sku
+.toLowerCase()
+.includes(text)
 
-    useMemo(()=>{
+||
 
+(product.barcode ?? "")
+.toLowerCase()
+.includes(text);
 
-      return products.filter(product=>{
 
 
-        const text =
-          search.toLowerCase();
 
+const stock =
 
+product.stock_entries?.reduce(
 
-        const matchesSearch =
+(total,item)=>
 
-          !text ||
+total + Number(item.quantity || 0),
 
-          product.product_name
-          .toLowerCase()
-          .includes(text)
+0
 
-          ||
+) || 0;
 
-          product.sku
-          .toLowerCase()
-          .includes(text)
 
-          ||
 
-          (product.barcode ?? "")
-          .toLowerCase()
-          .includes(text);
 
+return (
 
+matchesSearch &&
 
+(!category || product.category===category)
 
+&&
 
-        const matchesCategory =
+(!brand || product.brand===brand)
 
-          !category ||
+&&
 
-          product.category === category;
+(
 
+stockStatus===""
 
+||
 
+(stockStatus==="healthy" &&
+stock > Number(product.minimum_stock))
 
-        const matchesBrand =
+||
 
-          !brand ||
+(stockStatus==="low" &&
+stock <= Number(product.minimum_stock))
 
-          product.brand === brand;
+)
 
+&&
 
+(!status || product.status===status)
 
+);
 
 
-        const stock =
+});
 
-          product.stock_entries?.reduce(
 
-            (total,entry)=>
+},[
 
-              total + Number(entry.quantity || 0),
+products,
 
-            0
+search,
 
-          ) || 0;
+category,
 
+brand,
 
+stockStatus,
 
+status
 
-        const matchesStock =
+]);
 
-          stockStatus === ""
 
-          ?
 
-          true
 
-          :
 
-          stockStatus === "low"
 
-          ?
 
-          stock <= Number(product.minimum_stock)
 
-          :
 
-          stock > Number(product.minimum_stock);
+function handleProductChange(
 
-
-
-
-
-        return (
-
-          matchesSearch &&
-
-          matchesCategory &&
-
-          matchesBrand &&
-
-          matchesStock
-
-        );
-
-
-      });
-
-
-    },[
-
-      products,
-
-      search,
-
-      category,
-
-      brand,
-
-      stockStatus
-
-    ]);
-
-
-
-
-
-
-
-
-
-  function handleProductChange(
-
-    e:React.ChangeEvent<
-
-      HTMLInputElement |
-
-      HTMLSelectElement |
-
-      HTMLTextAreaElement
-
-    >
-
-  ){
-
-
-    const {
-
-      name,
-
-      value,
-
-      type
-
-    } = e.target;
-
-
-
-    setProductForm({
-
-      ...productForm,
-
-
-      [name]:
-
-      type==="checkbox"
-
-      ?
-
-      (e.target as HTMLInputElement).checked
-
-      :
-
-      value
-
-    });
-
-
-  }
-
-
-
-
-
-
-
-  function prepareEdit(
-
-    product:InventoryProduct
-
-  ){
-
-    setEditingProduct(product);
-
-
-    setProductForm({
-
-      ...product
-
-    });
-
-  }
-
-
-
-
-
-
-
-  async function handleProductSubmit(
-
-    e:React.FormEvent
-
-  ){
-
-    e.preventDefault();
-
-
-    try{
-
-
-      setSaving(true);
-
-
-
-      const payload = {
-
-
-        ...productForm,
-
-        workspace_id:WORKSPACE_ID,
-
-
-        purchase_price:Number(
-          productForm.purchase_price
-        ),
-
-
-        selling_price:Number(
-          productForm.selling_price
-        ),
-
-
-        minimum_stock:Number(
-          productForm.minimum_stock
-        ),
-
-
-        tax_rate:Number(
-          productForm.tax_rate
-        )
-
-      };
-
-
-
-      if(editingProduct?.id){
-
-
-        await ProductService.updateProduct(
-
-          editingProduct.id,
-
-          payload
-
-        );
-
-
-        setMessage(
-          "Product updated successfully"
-        );
-
-
-      }
-      else{
-
-
-        await ProductService.createProduct(
-
-          payload
-
-        );
-
-
-        setMessage(
-          "Product created successfully"
-        );
-
-
-      }
-
-
-      setEditingProduct(null);
-
-      await loadProducts();
-
-
-    }
-    catch(error){
-
-      console.error(error);
-
-      setMessage(
-        "Product operation failed"
-      );
-
-    }
-    finally{
-
-      setSaving(false);
-
-    }
-
-  }
-
-
-
-
-
-
-
-  async function handleDeleteProduct(
-
-    product:InventoryProduct
-
-  ){
-
-
-    if(!window.confirm(
-
-      `Delete ${product.product_name}?`
-
-    )) return;
-
-
-
-    await ProductService.deleteProduct(
-
-      product.id!
-
-    );
-
-
-    await loadProducts();
-
-  }
-
-
-
-
-
-
-
-
-  return (
-
-    <div className="inventory-container">
-
-
-      <div className="inventory-header">
-
-
-        <div>
-
-          <h1>
-            Inventory
-          </h1>
-
-
-          <p>
-            Manage products, stock and inventory intelligence.
-          </p>
-
-
-        </div>
-
-
-
-
-
-      </div>
-
-
-
-
-
-      <InventoryStats
-
-        products={products}
-
-      />
-
-
-
-
-
-      <div className="inventory-main-card">
-
-
-        <h2>
-
-          {
-            editingProduct
-
-            ?
-
-            "Edit Product"
-
-            :
-
-            "Add New Product"
-
-          }
-
-        </h2>
-
-
-
-        <ProductForm
-
-          form={productForm}
-
-          loading={saving}
-
-          message={message}
-
-          editing={!!editingProduct}
-
-          handleChange={handleProductChange}
-
-          handleSubmit={handleProductSubmit}
-
-          handleCancel={()=>{
-
-            setEditingProduct(null);
-
-          }}
-
-        />
-
-
-      </div>
-
-
-
-
-
-
-
-      <div className="inventory-main-card">
-
-
-<div
-  style={{
-    display: "flex",
-    justifyContent: "space-between",
-    alignItems: "center",
-    gap: "16px",
-    marginBottom: "20px",
-    flexWrap: "wrap"
-  }}
+e:React.ChangeEvent<
+HTMLInputElement |
+HTMLSelectElement |
+HTMLTextAreaElement
 >
 
-  <div style={{ flex: 1 }}>
+){
 
-    <SearchFilterBar
 
-      search={search}
+const {
 
-      setSearch={setSearch}
+name,
 
-      category={category}
+value,
 
-      setCategory={setCategory}
+type
 
-      brand={brand}
+}=e.target;
 
-      setBrand={setBrand}
 
-      stockStatus={stockStatus}
 
-      setStockStatus={setStockStatus}
+setProductForm({
 
-      categories={categories}
+...productForm,
 
-      brands={brands}
+[name]:
 
-    />
+type==="checkbox"
 
-  </div>
+?
 
-  <InventoryScannerButton
+(e.target as HTMLInputElement).checked
 
-    workspaceId={WORKSPACE_ID}
+:
 
-    onProductFound={setSelectedProduct}
+value
 
-  />
+});
+
+
+}
+
+
+
+
+
+
+
+
+
+function prepareEdit(
+
+product:InventoryProduct
+
+){
+
+setEditingProduct(product);
+
+setProductForm({
+
+...product
+
+});
+
+}
+
+
+
+
+
+
+
+
+
+async function handleProductSubmit(
+
+e:React.FormEvent
+
+){
+
+e.preventDefault();
+
+
+try{
+
+setSaving(true);
+
+
+
+const payload={
+
+...productForm,
+
+workspace_id:WORKSPACE_ID,
+
+purchase_price:Number(productForm.purchase_price),
+
+selling_price:Number(productForm.selling_price),
+
+minimum_stock:Number(productForm.minimum_stock),
+
+tax_rate:Number(productForm.tax_rate)
+
+};
+
+
+
+
+if(editingProduct?.id){
+
+await ProductService.updateProduct(
+
+editingProduct.id,
+
+payload
+
+);
+
+
+setMessage(
+"Product updated"
+);
+
+
+}
+else{
+
+
+await ProductService.createProduct(
+
+payload
+
+);
+
+
+setMessage(
+"Product created"
+);
+
+
+}
+
+
+
+setEditingProduct(null);
+
+
+await loadProducts();
+
+
+}
+
+catch(error){
+
+console.error(error);
+
+setMessage(
+"Operation failed"
+);
+
+}
+
+finally{
+
+setSaving(false);
+
+}
+
+}
+
+
+
+
+
+
+
+
+
+
+async function handleArchiveProduct(
+
+product:InventoryProduct
+
+){
+
+
+const confirmArchive =
+window.confirm(
+`Archive ${product.product_name}?`
+);
+
+
+if(!confirmArchive)
+
+return;
+
+
+
+await ProductService.archiveProduct(
+
+product.id!
+
+);
+
+
+
+await loadProducts();
+
+
+}
+
+
+
+
+
+
+
+
+return (
+
+<div className="inventory-container">
+
+
+
+<div className="inventory-header">
+
+<div>
+
+<h1>
+Inventory
+</h1>
+
+
+<p>
+Manage products, stock and inventory intelligence.
+</p>
+
+
+</div>
 
 </div>
 
@@ -703,141 +555,233 @@ function Inventory(){
 
 
 
-        {
 
-          loading
+<InventoryStats
 
-          ?
+products={products}
 
-          <p>
-            Loading...
-          </p>
+/>
 
 
-          :
 
 
-          <InventoryTable
 
-            products={filteredProducts}
 
-            onEdit={prepareEdit}
 
-            onDelete={handleDeleteProduct}
+<div className="inventory-main-card">
 
-            onView={setSelectedProduct}
 
-          />
+<h2>
 
+{
 
-        }
+editingProduct
 
+?
 
-      </div>
+"Edit Product"
 
+:
 
-
-
-
-
-
-      <InventoryReports
-
-        products={products}
-
-      />
-
-
-
-
-
-            <InventorySidePanel />
-
-
-      {
-        selectedProduct &&
-
-        <div className="inventory-main-card">
-
-
-          <h3>
-            Product Details
-          </h3>
-
-
-
-          {
-            selectedProduct.image_url &&
-
-            <img
-
-              src={selectedProduct.image_url}
-
-              alt={selectedProduct.product_name}
-
-              style={{
-
-                width:"180px",
-
-                height:"180px",
-
-                objectFit:"cover",
-
-                borderRadius:"16px",
-
-                marginBottom:"15px"
-
-              }}
-
-            />
-
-          }
-
-
-
-          <p>
-            Name: {selectedProduct.product_name}
-          </p>
-
-
-          <p>
-            SKU: {selectedProduct.sku}
-          </p>
-
-
-          <p>
-            Barcode: {selectedProduct.barcode || "-"}
-          </p>
-
-
-          <p>
-            Selling Price: ₹
-            {selectedProduct.selling_price}
-          </p>
-
-
-
-          <button
-
-            onClick={()=>setSelectedProduct(null)}
-
-          >
-
-            Close
-
-          </button>
-
-
-        </div>
-
-      }
-
-
-    </div>
-
-  );
+"Add New Product"
 
 }
+
+</h2>
+
+
+
+
+<ProductForm
+
+form={productForm}
+
+loading={saving}
+
+message={message}
+
+editing={!!editingProduct}
+
+handleChange={handleProductChange}
+
+handleSubmit={handleProductSubmit}
+
+handleCancel={()=>{
+
+setEditingProduct(null);
+
+}}
+
+/>
+
+
+</div>
+
+
+
+
+
+
+
+
+<div className="inventory-main-card">
+
+
+
+<SearchFilterBar
+
+search={search}
+
+setSearch={setSearch}
+
+category={category}
+
+setCategory={setCategory}
+
+brand={brand}
+
+setBrand={setBrand}
+
+stockStatus={stockStatus}
+
+setStockStatus={setStockStatus}
+
+status={status}
+
+setStatus={setStatus}
+
+categories={categories}
+
+brands={brands}
+
+/>
+
+
+
+
+
+
+<InventoryScannerButton
+
+workspaceId={WORKSPACE_ID}
+
+onProductFound={setSelectedProduct}
+
+/>
+
+
+
+
+
+
+{
+
+loading
+
+?
+
+<p>
+Loading...
+</p>
+
+:
+
+<InventoryTable
+
+products={filteredProducts}
+
+onEdit={prepareEdit}
+
+onDelete={handleArchiveProduct}
+
+onView={setSelectedProduct}
+
+/>
+
+}
+
+
+
+
+</div>
+
+
+
+
+
+
+
+<InventoryReports
+
+products={products}
+
+/>
+
+
+
+
+
+<InventorySidePanel />
+
+
+
+
+
+
+
+{
+
+selectedProduct &&
+
+<div className="inventory-main-card">
+
+
+<h3>
+Product Details
+</h3>
+
+
+<p>
+Name: {selectedProduct.product_name}
+</p>
+
+
+<p>
+SKU: {selectedProduct.sku}
+</p>
+
+
+<p>
+Barcode: {selectedProduct.barcode || "-"}
+</p>
+
+
+
+<button
+
+onClick={()=>setSelectedProduct(null)}
+
+>
+
+Close
+
+</button>
+
+
+</div>
+
+}
+
+
+
+
+</div>
+
+);
+
+
+}
+
 
 
 export default Inventory;

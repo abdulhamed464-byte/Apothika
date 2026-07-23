@@ -20,6 +20,11 @@ interface Props {
   setStockStatus:(value:string)=>void;
 
 
+  status:string;
+
+  setStatus:(value:string)=>void;
+
+
   categories:string[];
 
   brands:string[];
@@ -46,6 +51,10 @@ function SearchFilterBar({
 
   setStockStatus,
 
+  status,
+
+  setStatus,
+
   categories,
 
   brands
@@ -61,7 +70,7 @@ function SearchFilterBar({
 
         display:"grid",
 
-        gridTemplateColumns:"2fr 1fr 1fr 1fr",
+        gridTemplateColumns:"2fr 1fr 1fr 1fr 1fr",
 
         gap:"15px",
 
@@ -223,6 +232,8 @@ function SearchFilterBar({
 
 
 
+
+
       <select
 
         value={stockStatus}
@@ -269,6 +280,67 @@ function SearchFilterBar({
 
 
       </select>
+
+
+
+
+
+
+
+      <select
+
+        value={status}
+
+        onChange={(e)=>
+
+          setStatus(e.target.value)
+
+        }
+
+        style={{
+
+          padding:"12px",
+
+          borderRadius:"12px",
+
+          background:"#111827",
+
+          color:"white"
+
+        }}
+
+      >
+
+        <option value="">
+
+          Active Products
+
+        </option>
+
+
+        <option value="Active">
+
+          Active
+
+        </option>
+
+
+        <option value="Inactive">
+
+          Inactive
+
+        </option>
+
+
+        <option value="Archived">
+
+          Archived
+
+        </option>
+
+
+      </select>
+
 
 
     </div>
