@@ -6,9 +6,8 @@ INVENTORY V4 - STOCK MANAGEMENT
 ====================================================
 
 
-[ ] Stock In Workflow
-
-[ ] Stock Out Workflow
+[x] Stock In Workflow
+[x] Stock Out Workflow
 
 [ ] Stock Adjustment
 
