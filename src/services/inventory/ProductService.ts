@@ -5,6 +5,8 @@ export interface Product {
 
   id?: string;
 
+  business_id?: string;
+
   workspace_id:string;
 
   product_name:string;
@@ -50,248 +52,376 @@ export interface Product {
 export interface InventoryProduct extends Product {
 
   stock_entries?: {
+
     quantity:number | null;
+
+  }[];
+
+  stock_out_entries?: {
+
+    quantity:number | null;
+
   }[];
 
 }
 
 
 
+
+
 export const ProductService = {
 
 
-  async getProducts(
-    workspaceId:string
-  ):Promise<InventoryProduct[]> {
 
+async getProducts(
 
-    const {
-      data,
-      error
-    } = await supabase
+  workspaceId:string
 
-      .from("products")
+):Promise<InventoryProduct[]> {
 
-      .select("*")
 
-      .eq(
-        "workspace_id",
-        workspaceId
-      )
 
-      .order(
-        "created_at",
-        {
-          ascending:false
-        }
-      );
+const {
 
+  data,
 
+  error
 
-    if(error){
+}=await supabase
 
-      throw error;
 
-    }
+.from("products")
 
 
+.select(`
 
-    return (data ?? []).map(
-      (product)=>({
+  *,
 
-        ...product,
+  stock_entries(
 
-        stock_entries:[]
+    quantity
 
-      })
-    ) as InventoryProduct[];
+  ),
 
+  stock_out_entries(
 
-  },
+    quantity
 
+  )
 
+`)
 
 
+.eq(
+  "workspace_id",
+  workspaceId
+)
 
-  async createProduct(
-    product:Product
-  ){
+.eq(
+  "status",
+  "Active"
+)
 
-
-    const {
-      data,
-      error
-    } = await supabase
-
-      .from("products")
-
-      .insert(product)
-
-      .select()
-
-      .single();
-
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
-    return data as Product;
-
-
-  },
-
-
-
-
-
-  async updateProduct(
-    id:string,
-    product:Partial<Product>
-  ){
-
-
-    const {
-      data,
-      error
-    } = await supabase
-
-      .from("products")
-
-      .update(product)
-
-      .eq(
-        "id",
-        id
-      )
-
-      .select()
-
-      .single();
-
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
-    return data as Product;
-
-
-  },
-
-
-
-
-
-  async archiveProduct(
-    id:string
-  ){
-
-
-    const {
-      error
-    } = await supabase
-
-      .from("products")
-
-      .update({
-
-        status:"Archived"
-
-      })
-
-      .eq(
-        "id",
-        id
-      );
-
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
-  },
-
-
-
-
-
-  async restoreProduct(
-    id:string
-  ){
-
-
-    const {
-      error
-    } = await supabase
-
-      .from("products")
-
-      .update({
-
-        status:"Active"
-
-      })
-
-      .eq(
-        "id",
-        id
-      );
-
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
-  },
-
-
-
-
-
-  async deleteProduct(
-    id:string
-  ){
-
-
-    const {
-      error
-    } = await supabase
-
-      .from("products")
-
-      .delete()
-
-      .eq(
-        "id",
-        id
-      );
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
+.order(
+  "created_at",
+  {
+    ascending:false
   }
+);
+
+
+
+
+
+if(error){
+
+  throw error;
+
+}
+
+
+
+
+
+return (
+
+data ?? []
+
+) as InventoryProduct[];
+
+
+
+},
+
+
+
+
+
+
+
+async createProduct(
+
+product:Product
+
+){
+
+
+
+const {
+
+data,
+
+error
+
+}=await supabase
+
+
+.from("products")
+
+
+.insert(product)
+
+
+.select()
+
+
+.single();
+
+
+
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+return data as Product;
+
+
+
+},
+
+
+
+
+
+
+
+async updateProduct(
+
+id:string,
+
+product:Partial<Product>
+
+){
+
+
+
+const {
+
+data,
+
+error
+
+}=await supabase
+
+
+.from("products")
+
+
+.update(product)
+
+
+.eq(
+
+"id",
+
+id
+
+)
+
+
+.select()
+
+
+.single();
+
+
+
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+return data as Product;
+
+
+
+},
+
+
+
+
+
+
+
+async archiveProduct(
+
+id:string
+
+){
+
+
+
+const {
+
+error
+
+}=await supabase
+
+
+.from("products")
+
+
+.update({
+
+status:"Archived"
+
+})
+
+
+.eq(
+
+"id",
+
+id
+
+);
+
+
+
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+},
+
+
+
+
+
+
+
+async restoreProduct(
+
+id:string
+
+){
+
+
+
+const {
+
+error
+
+}=await supabase
+
+
+.from("products")
+
+
+.update({
+
+status:"Active"
+
+})
+
+
+.eq(
+
+"id",
+
+id
+
+);
+
+
+
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+},
+
+
+
+
+
+
+
+async deleteProduct(
+
+id:string
+
+){
+
+
+
+const {
+
+error
+
+}=await supabase
+
+
+.from("products")
+
+
+.delete()
+
+
+.eq(
+
+"id",
+
+id
+
+);
+
+
+
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+}
 
 
 

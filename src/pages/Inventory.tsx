@@ -115,6 +115,40 @@ WORKSPACE_ID
 );
 
 
+const para = data.find(
+  p => p.sku === "PCM500"
+);
+
+
+console.log(
+  "PARA STOCK IN:",
+  para?.stock_entries
+);
+
+
+console.log(
+  "PARA STOCK OUT:",
+  para?.stock_out_entries
+);
+
+
+console.log(
+  "PARA PRODUCT:",
+  para
+);
+
+
+console.log(
+  "PARA STOCK IN:",
+  para?.stock_entries
+);
+
+
+console.log(
+  "PARA STOCK OUT:",
+  para?.stock_out_entries
+);
+
 setProducts(data);
 
 

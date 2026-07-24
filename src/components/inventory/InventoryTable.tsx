@@ -94,7 +94,7 @@ Actions
 products.map((product)=>{
 
 
-const stock =
+const stockIn =
 
 product.stock_entries?.reduce(
 
@@ -106,6 +106,23 @@ total + Number(item.quantity || 0),
 
 ) || 0;
 
+
+
+const stockOut =
+
+product.stock_out_entries?.reduce(
+
+(total,item)=>
+
+total + Number(item.quantity || 0),
+
+0
+
+) || 0;
+
+
+
+const stock = stockIn - stockOut;
 
 
 const value =
