@@ -49,9 +49,30 @@ new Date()
 
 .toISOString()
 
-.split("T")[0]
+.split("T")[0],
+
+
+batch_number:"",
+
+manufacturing_date:"",
+
+expiry_date:""
 
 });
+
+
+
+
+
+const selectedProduct =
+
+products.find(
+
+product =>
+
+product.id === form.product_id
+
+);
 
 
 
@@ -82,14 +103,12 @@ e.target.value
 
 
 
-
 function submit(
 
 e:React.FormEvent
 
 ){
 
-console.log("STOCK FORM VALUE:", form.quantity);
 
 e.preventDefault();
 
@@ -115,35 +134,61 @@ return;
 
 
 
+
 onSubmit({
+
 
 product_id:
 
 form.product_id,
 
+
 supplier_id:
 
 form.supplier_id || null,
+
 
 quantity:
 
 Number(form.quantity),
 
+
 purchase_price:
 
 Number(form.purchase_price),
+
 
 invoice_number:
 
 form.invoice_number,
 
+
 entry_date:
 
 form.entry_date,
 
+
+
+batch_number:
+
+form.batch_number || undefined,
+
+
+manufacturing_date:
+
+form.manufacturing_date || undefined,
+
+
+expiry_date:
+
+form.expiry_date || undefined,
+
+
 business_id:""
 
+
 });
+
 
 }
 
@@ -157,7 +202,6 @@ return (
 
 <form
 
-
 onSubmit={submit}
 
 className="product-form"
@@ -165,11 +209,13 @@ className="product-form"
 >
 
 
+
 <h3>
 
 Stock In
 
 </h3>
+
 
 
 
@@ -190,7 +236,8 @@ onChange={change}
 
 >
 
-<option>
+
+<option value="">
 
 Select Product
 
@@ -200,18 +247,26 @@ Select Product
 {
 
 products.map(product=>(
+
 <option
- key={product.id}
- value={product.id}
+
+key={product.id}
+
+value={product.id}
+
 >
- {product.product_name} - {product.sku}
+
+{product.product_name} - {product.sku}
+
 </option>
+
 ))
 
 }
 
 
 </select>
+
 
 
 
@@ -234,7 +289,8 @@ onChange={change}
 
 >
 
-<option>
+
+<option value="">
 
 Select Supplier
 
@@ -268,6 +324,7 @@ value={s.id}
 
 
 
+
 <label>
 
 Quantity
@@ -286,6 +343,7 @@ value={form.quantity}
 onChange={change}
 
 />
+
 
 
 
@@ -314,6 +372,7 @@ onChange={change}
 
 
 
+
 <label>
 
 Invoice Number
@@ -330,6 +389,7 @@ value={form.invoice_number}
 onChange={change}
 
 />
+
 
 
 
@@ -353,6 +413,112 @@ value={form.entry_date}
 onChange={change}
 
 />
+
+
+
+
+
+
+
+{
+
+selectedProduct?.batch_required &&
+
+<>
+
+
+<hr/>
+
+
+<h3>
+
+Batch Information
+
+</h3>
+
+
+
+
+<label>
+
+Batch Number *
+
+</label>
+
+
+<input
+
+name="batch_number"
+
+value={form.batch_number}
+
+onChange={change}
+
+/>
+
+
+
+
+
+<label>
+
+Manufacturing Date
+
+</label>
+
+
+<input
+
+type="date"
+
+name="manufacturing_date"
+
+value={form.manufacturing_date}
+
+onChange={change}
+
+/>
+
+
+
+
+
+{
+
+selectedProduct?.expiry_required &&
+
+<>
+
+<label>
+
+Expiry Date *
+
+</label>
+
+
+<input
+
+type="date"
+
+name="expiry_date"
+
+value={form.expiry_date}
+
+onChange={change}
+
+/>
+
+</>
+
+}
+
+
+
+</>
+
+}
+
+
 
 
 
@@ -387,6 +553,7 @@ loading
 );
 
 }
+
 
 
 export default StockInForm;

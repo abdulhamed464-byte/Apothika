@@ -22,6 +22,8 @@ export interface StockEntry {
 
 
 
+
+
 export interface StockSummary {
 
   product_id: string;
@@ -29,6 +31,8 @@ export interface StockSummary {
   quantity: number;
 
 }
+
+
 
 
 
@@ -47,5 +51,14 @@ export interface StockInPayload {
   invoice_number?: string | null;
 
   entry_date?: string;
+
+
+  // Batch Information
+
+  batch_number?: string;
+
+  manufacturing_date?: string;
+
+  expiry_date?: string;
 
 }

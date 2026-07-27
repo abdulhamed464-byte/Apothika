@@ -5,135 +5,337 @@ import type {
   StockInPayload
 } from "../../types/stock";
 
+import { BatchService } from "./BatchService";
+
+
 
 export const StockService = {
 
 
-  async stockIn(
-    payload: StockInPayload
-  ): Promise<StockEntry> {
 
+async stockIn(
 
-    const {
-      data,
-      error
-    } = await supabase
+  payload: StockInPayload
 
-      .from("stock_entries")
-
-      .insert({
-
-        business_id:
-          payload.business_id,
-
-        supplier_id:
-          payload.supplier_id ?? null,
-
-        product_id:
-          payload.product_id,
-
-        quantity:
-          payload.quantity,
-
-        purchase_price:
-          payload.purchase_price,
-
-        invoice_number:
-          payload.invoice_number ?? null,
-
-        entry_date:
-          payload.entry_date ??
-          new Date()
-            .toISOString()
-            .split("T")[0]
-
-      })
-
-      .select()
-
-      .single();
+): Promise<StockEntry> {
 
 
 
-    if(error){
-
-      throw error;
-
-    }
+  /*
+    Check product batch requirement first
+  */
 
 
-    return data as StockEntry;
+  const {
 
-  },
+    data:product,
+
+    error:productError
+
+  } = await supabase
+
+
+    .from("products")
+
+
+    .select(`
+
+      batch_required,
+
+      expiry_required
+
+    `)
+
+
+    .eq(
+
+      "id",
+
+      payload.product_id
+
+    )
+
+
+    .single();
 
 
 
 
+  if(productError){
 
-
-
-  async getAllStockEntries(
-
-    businessId:string
-
-  ):Promise<StockEntry[]> {
-
-
-    const {
-
-      data,
-
-      error
-
-    } = await supabase
-
-
-      .from("stock_entries")
-
-      .select("*")
-
-
-      .eq(
-
-        "business_id",
-
-        businessId
-
-      )
-
-
-      .order(
-
-        "created_at",
-
-        {
-
-          ascending:false
-
-        }
-
-      );
-
-
-
-    if(error){
-
-      throw error;
-
-    }
-
-
-    return (
-
-      data ??
-
-      []
-
-    ) as StockEntry[];
+    throw productError;
 
   }
 
 
+
+
+  /*
+    Validate batch information
+    before creating stock entry
+  */
+
+
+  if(product?.batch_required){
+
+
+    if(!payload.batch_number){
+
+      throw new Error(
+
+        "Batch number is required for this product"
+
+      );
+
+    }
+
+
+
+    if(
+
+      product.expiry_required &&
+
+      !payload.expiry_date
+
+    ){
+
+      throw new Error(
+
+        "Expiry date is required for this product"
+
+      );
+
+    }
+
+
+  }
+
+
+
+
+
+
+  /*
+    Create Stock Entry
+  */
+
+
+  const {
+
+    data,
+
+    error
+
+  } = await supabase
+
+
+    .from("stock_entries")
+
+
+    .insert({
+
+
+      business_id:
+
+        payload.business_id,
+
+
+      supplier_id:
+
+        payload.supplier_id ?? null,
+
+
+      product_id:
+
+        payload.product_id,
+
+
+      quantity:
+
+        payload.quantity,
+
+
+      purchase_price:
+
+        payload.purchase_price,
+
+
+      invoice_number:
+
+        payload.invoice_number ?? null,
+
+
+      entry_date:
+
+        payload.entry_date ??
+
+        new Date()
+
+          .toISOString()
+
+          .split("T")[0]
+
+
+    })
+
+
+    .select()
+
+
+    .single();
+
+
+
+
+  if(error){
+
+    throw error;
+
+  }
+
+
+
+
+
+
+  /*
+    Create Batch
+  */
+
+
+  if(product?.batch_required){
+
+
+
+    await BatchService.createBatch({
+
+
+      business_id:
+
+        payload.business_id,
+
+
+      product_id:
+
+        payload.product_id,
+
+
+      stock_entry_id:
+
+        data.id,
+
+
+      batch_number:
+
+        payload.batch_number!,
+
+
+      manufacturing_date:
+
+        payload.manufacturing_date,
+
+
+      expiry_date:
+
+        payload.expiry_date,
+
+
+      quantity_received:
+
+        payload.quantity,
+
+
+      purchase_price:
+
+        payload.purchase_price
+
+
+    });
+
+
+  }
+
+
+
+
+  return data as StockEntry;
+
+
+
+},
+
+
+
+
+
+
+
+async getAllStockEntries(
+
+businessId:string
+
+):Promise<StockEntry[]> {
+
+
+
+const {
+
+data,
+
+error
+
+}=await supabase
+
+
+.from("stock_entries")
+
+
+.select("*")
+
+
+.eq(
+
+"business_id",
+
+businessId
+
+)
+
+
+.order(
+
+"created_at",
+
+{
+
+ascending:false
+
+}
+
+);
+
+
+
+
+if(error){
+
+throw error;
+
+}
+
+
+
+return (
+
+data ??
+
+[]
+
+) as StockEntry[];
+
+
+
+}
 
 
 

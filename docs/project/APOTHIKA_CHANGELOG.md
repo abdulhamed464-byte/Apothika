@@ -1,133 +1,139 @@
-# APOTHIKA CHANGELOG
-
 ====================================================
+
 July 2026
+
+## Inventory V4 Batch Management Started
+
 ====================================================
 
-## Inventory V3 Product Master Completion
 
-Completed Inventory Product Master System.
+Started implementation of Batch Management module.
+
 
 Added:
 
-- Product CRUD
-- Product listing
-- Product editing
-- Product details view
-- Product archive workflow
-- Inventory table actions
-- Search
-- Filters
-- SKU generator
-- Barcode generator
-- Barcode validation
-- Barcode scanner
-- Product image upload
-- Inventory KPI cards
-- Inventory reports
 
-Fixed:
+✅ inventory_batches database foundation
 
-- Product loading issues
-- Inventory table actions
-- Archive status workflow
 
-Testing completed:
+✅ BatchService foundation
 
-✔ Product display
 
-✔ View details
+✅ StockService batch integration
 
-✔ Archive product
 
-✔ Dashboard inventory integration
+✅ Batch validation during Stock In
 
-Technical Notes:
 
-Products and stock_entries are separate database entities.
-
-Stock quantity operations must be handled through stock_entries relationships.
 
 ====================================================
 
-## Inventory V4 Stock Management
+Technical Changes
 
-Completed:
 
-- Stock In Workflow
-- Stock Out Workflow
-- Stock Entries
-- Stock Out Entries
-- Inventory Table Integration
-- Inventory Dashboard Statistics
-- Live Inventory Stock Calculation
-- Inventory Value Calculation
-- Low Stock Detection
+Stock In flow updated:
 
-Fixed:
 
-- Inventory dashboard displaying outdated stock quantities.
-- Inventory value using Stock In totals instead of current stock.
-- Dashboard statistics now match Inventory Table calculations.
-- Unified stock calculation across Inventory components.
-- Removed temporary debugging logs after validation.
+Stock Entry
 
-Testing Completed:
+↓
 
-✔ Stock In updates inventory correctly.
+Check Product Batch Requirement
 
-✔ Stock Out updates inventory correctly.
+↓
 
-✔ Inventory table displays current stock.
+Validate Batch Number
 
-✔ Dashboard statistics match inventory table.
+↓
 
-✔ Inventory value calculation verified.
+Create Inventory Batch
 
-✔ Low stock calculation verified.
 
-Verified Formula:
-
-Current Stock
-
-=
-
-Total Stock In
-
-−
-
-Total Stock Out
-
-Inventory Value
-
-=
-
-Current Stock
-
-×
-
-Purchase Price
-
-Technical Notes:
-
-- Stock calculations are derived dynamically from stock_entries and stock_out_entries.
-- Inventory dashboard and table now share the same calculation logic.
-- Supabase relationships for Stock In and Stock Out verified.
-- Inventory module is ready for Batch Management.
 
 ====================================================
 
-Next Development Phase
+Current Architecture
 
-Inventory V4 - Batch & Expiry Management
 
-Planned:
+Products
 
-- Batch Number Tracking
-- Expiry Date Tracking
-- Batch-wise Inventory
-- FIFO Stock Consumption
-- Inventory Adjustment
-- Stock Transfer
-- Expired Stock Alerts
-- Inventory Permissions
+↓
+
+Stock Entries
+
+↓
+
+Inventory Batches
+
+↓
+
+Batch Inventory
+
+↓
+
+Sales
+
+
+
+====================================================
+
+Testing Completed
+
+
+✔ Product batch_required validation
+
+
+✔ Batch number validation
+
+
+✔ Stock entry integration started
+
+
+
+====================================================
+
+Known Issue
+
+
+Business ID mapping requires correction.
+
+
+Current:
+
+
+products
+
+workspace_id
+
+
+
+stock_entries
+
+business_id
+
+
+
+inventory_batches
+
+business_id
+
+
+
+Application must maintain separate IDs.
+
+
+
+====================================================
+
+Pending
+
+
+[ ] Verify batch creation
+
+[ ] Batch listing
+
+[ ] Batch history
+
+[ ] Expiry management
+
+[ ] FIFO stock consumption
