@@ -1,268 +1,196 @@
 interface Props {
-
-products:any[];
-
+  products: any[];
 }
-
 
 
 function InventoryStats({
+  products
+}: Props) {
 
-products
 
-}:Props){
+  const totalProducts =
+    products.length;
 
 
 
-const totalProducts =
+  const calculateStock = (product: any) => {
 
-products.length;
 
+    const stockIn =
+      product.stock_entries?.reduce(
+        (total: number, entry: any) =>
+          total + Number(entry.quantity || 0),
+        0
+      ) || 0;
 
 
 
+    const stockOut =
+      product.stock_out_entries?.reduce(
+        (total: number, entry: any) =>
+          total + Number(entry.quantity || 0),
+        0
+      ) || 0;
 
 
-const totalStock =
 
-products.reduce(
+    return stockIn - stockOut;
 
-(sum,product)=>{
+  };
 
 
-const stock =
 
-product.stock_entries?.reduce(
 
-(total:any,entry:any)=>
 
-total +
 
-Number(entry.quantity || 0),
+  const totalStock =
 
-0
+    products.reduce(
+      (sum, product) => {
 
-)
+        return sum + calculateStock(product);
 
-|| 0;
+      },
+      0
+    );
 
 
 
-return sum + stock;
 
 
-},
 
-0
 
-);
+  const inventoryValue =
 
+    products.reduce(
+      (sum, product) => {
 
 
+        const stock =
+          calculateStock(product);
 
 
 
-const inventoryValue =
+        return (
 
-products.reduce(
+          sum +
 
-(sum,product)=>{
+          (
+            stock *
+            Number(product.purchase_price || 0)
+          )
 
+        );
 
-const stock =
 
-product.stock_entries?.reduce(
+      },
+      0
+    );
 
-(total:any,entry:any)=>
 
-total +
 
-Number(entry.quantity || 0),
 
-0
 
-)
 
-|| 0;
 
+  const lowStock =
 
+    products.filter(
+      product => {
 
-return (
 
-sum +
+        const stock =
+          calculateStock(product);
 
-(
 
-stock *
 
-Number(product.purchase_price || 0)
+        return (
 
-)
+          stock <=
+          Number(product.minimum_stock || 0)
 
-);
+        );
 
 
+      }
 
-},
+    ).length;
 
-0
 
-);
 
 
 
 
 
+  return (
 
+    <div className="inventory-stats">
 
-const lowStock =
 
-products.filter(
+      <div className="inventory-stat-card">
 
-product=>{
+        <span>
+          Total Products
+        </span>
 
+        <strong>
+          {totalProducts}
+        </strong>
 
-const stock =
+      </div>
 
-product.stock_entries?.reduce(
 
-(total:any,entry:any)=>
 
-total +
 
-Number(entry.quantity || 0),
+      <div className="inventory-stat-card">
 
-0
+        <span>
+          Stock Quantity
+        </span>
 
-)
+        <strong>
+          {totalStock}
+        </strong>
 
-|| 0;
+      </div>
 
 
 
-return (
 
-stock <=
 
-Number(product.minimum_stock || 0)
+      <div className="inventory-stat-card">
 
-);
+        <span>
+          Inventory Value
+        </span>
 
+        <strong>
+          ₹{inventoryValue.toLocaleString()}
+        </strong>
 
+      </div>
 
-}
 
-).length;
 
 
 
+      <div className="inventory-stat-card">
 
+        <span>
+          Low Stock
+        </span>
 
+        <strong>
+          {lowStock}
+        </strong>
 
+      </div>
 
 
-return (
 
-<div className="inventory-stats">
+    </div>
 
-
-
-
-
-<div className="inventory-stat-card">
-
-<span>
-
-Total Products
-
-</span>
-
-
-<strong>
-
-{totalProducts}
-
-</strong>
-
-</div>
-
-
-
-
-
-
-
-<div className="inventory-stat-card">
-
-<span>
-
-Stock Quantity
-
-</span>
-
-
-<strong>
-
-{totalStock}
-
-</strong>
-
-</div>
-
-
-
-
-
-
-
-<div className="inventory-stat-card">
-
-<span>
-
-Inventory Value
-
-</span>
-
-
-<strong>
-
-₹{inventoryValue.toLocaleString()}
-
-</strong>
-
-</div>
-
-
-
-
-
-
-
-<div className="inventory-stat-card">
-
-<span>
-
-Low Stock
-
-</span>
-
-
-<strong>
-
-{lowStock}
-
-</strong>
-
-</div>
-
-
-
-
-
-</div>
-
-);
-
+  );
 
 }
 

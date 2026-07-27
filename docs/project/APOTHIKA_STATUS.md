@@ -1,7 +1,7 @@
 # APOTHIKA ERP
 ## Master Project Status
 
-Version: 2.2  
+Version: 2.3
 Last Updated: July 2026
 
 ====================================================
@@ -64,7 +64,6 @@ Development
 
 - GitHub Codespaces
 
-
 ====================================================
 
 CURRENT PROJECT STATUS
@@ -72,18 +71,16 @@ CURRENT PROJECT STATUS
 
 Overall Progress
 
-Approximately 55%
+Approximately 60%
 
 Foundation is stable.
 
-Core ERP modules are being developed incrementally.
-
+Core ERP modules continue to be developed incrementally with Inventory V4 now operational.
 
 ====================================================
 
 MODULE STATUS
 ====================================================
-
 
 Authentication
 
@@ -102,10 +99,7 @@ Remaining:
 - Permissions
 - Password reset
 
-
-
 --------------------------------------------
-
 
 Workspace
 
@@ -122,10 +116,7 @@ Remaining:
 - Multiple workspace switching
 - Admin management
 
-
-
 --------------------------------------------
-
 
 Dashboard
 
@@ -139,21 +130,16 @@ Completed:
 - Customer count
 - Low stock
 
-
 Remaining:
 
 - Profit analytics
 - AI dashboard
 
-
-
 --------------------------------------------
-
 
 Purchase Module
 
 ✅ Completed
-
 
 Features:
 
@@ -170,9 +156,7 @@ Features:
 - Inventory update
 - Stock entry creation
 
-
 Purchase Flow
-
 
 Supplier
 
@@ -192,138 +176,123 @@ Stock Entries
 
 Inventory
 
-
-
 ====================================================
 
 INVENTORY MODULE
 ====================================================
 
-
 ## Inventory V3 Completed
 
 Product Master System
 
-
 Completed:
 
-
 ✔ Product Service
-
 ✔ Product Form
-
 ✔ Product CRUD
-
 ✔ Product Edit
-
 ✔ Product Details View
-
 ✔ Inventory Table
-
 ✔ Inventory KPI Cards
-
 ✔ Inventory Reports
-
 ✔ Brand Management
-
 ✔ Category Management
-
 ✔ Unit Management
-
 ✔ Product Description
-
 ✔ SKU System
-
 ✔ SKU Generator
-
 ✔ Barcode Generation
-
 ✔ Barcode Validation
-
 ✔ Barcode Scanner
-
 ✔ Camera Scanner
-
 ✔ Barcode Lookup
-
 ✔ Barcode Labels
-
 ✔ Product Image Upload
-
 ✔ Image Preview
-
 ✔ Search
-
 ✔ Filters
-
 ✔ Archive Product
-
-
-Current Status:
-
-Inventory V3 Product Master is complete.
-
 
 Testing Completed:
 
-
 ✔ Products loading
-
 ✔ Product display
-
 ✔ Product view details
-
 ✔ Archive workflow
-
 ✔ Dashboard inventory integration
-
-
-
-Known Issue:
-
-Product create/update payload requires final cleanup.
-
-
-Reason:
-
-`stock_entries` is a separate database relationship and must not be sent as a column inside the `products` table.
-
-
 
 ====================================================
 
 INVENTORY V4 - STOCK MANAGEMENT
 ====================================================
 
+Status:
 
-Current Phase:
+✅ Core Stock Management Completed
 
-Starting next development milestone.
+Completed:
 
+✔ Stock In Workflow
+✔ Stock Out Workflow
+✔ Stock Entries
+✔ Stock Out Entries
+✔ Inventory Table
+✔ Inventory Dashboard Statistics
+✔ Live Inventory Calculation
+✔ Inventory Value Calculation
+✔ Low Stock Detection
+✔ Inventory Reports Integration
+
+Inventory Formula
+
+Current Stock
+
+=
+
+Total Stock In
+
+−
+
+Total Stock Out
+
+Inventory Value
+
+=
+
+Current Stock
+
+×
+
+Purchase Price
+
+Testing Completed
+
+✔ Stock In updates inventory
+✔ Stock Out updates inventory
+✔ Inventory table calculations
+✔ Dashboard statistics
+✔ Inventory value calculations
+✔ Low stock detection
+✔ Supabase relationship verification
+
+====================================================
+
+NEXT INVENTORY PHASE
+====================================================
+
+Batch Management
 
 Planned Features:
 
+- Batch Number Tracking
+- Expiry Date Tracking
+- Batch-wise Inventory
+- FIFO Stock Consumption
+- Inventory Adjustment
+- Stock Transfer
+- Expired Stock Alerts
 
-- Stock In Workflow
-
-- Stock Out Workflow
-
-- Stock Adjustment
-
-- Stock Movement History
-
-- Batch Management
-
-- Expiry Management
-
-- Low Stock Alerts
-
-- Inventory Permissions
-
-
-
-Architecture:
-
+Architecture
 
 Products
 
@@ -333,109 +302,74 @@ Stock Entries
 
 ↓
 
-Inventory Operations
+Batch Information
 
+↓
 
+Inventory
+
+↓
+
+Sales
 
 ====================================================
 
 DATABASE
 ====================================================
 
-
 Completed Tables:
 
-
 - profiles
-
 - organizations
-
 - workspaces
-
 - user_workspaces
-
 - industries
-
 - modules
-
 - workspace_modules
-
 - suppliers
-
 - customers
-
 - products
-
 - purchases
-
 - purchase_items
-
 - stock_entries
-
+- stock_out_entries
 - sales
-
 - payment_status
-
-
 
 Important:
 
+Products remain separate from stock movement tables.
 
-Products and stock_entries are separate entities.
-
-
-Stock operations must use stock_entries relationships.
-
-
+Inventory calculations are generated from Stock In and Stock Out relationships.
 
 ====================================================
 
 CURRENT PRODUCT MODEL
 ====================================================
 
-
 Product contains:
 
-
 - Product Name
-
 - Description
-
 - SKU
-
 - Barcode
-
 - Category
-
 - Brand
-
 - Unit
-
 - Purchase Price
-
 - Selling Price
-
 - Tax
-
 - Minimum Stock
-
 - Image URL
-
 - Track Inventory
-
 - Batch Required
-
 - Expiry Required
-
 - Status
-
-
 
 ====================================================
 
 UI DESIGN
 ====================================================
-
 
 Theme:
 
@@ -449,9 +383,7 @@ Glass Cards
 
 Professional SaaS Layout
 
-
 Every module follows:
-
 
 Header
 
@@ -479,72 +411,45 @@ Details Modal
 
 Reports
 
-
-
 ====================================================
 
 CODING RULES
 ====================================================
 
-
 Always:
 
-
 ✔ Maintain architecture
-
 ✔ Never redesign working modules
-
 ✔ Keep database relationships intact
-
 ✔ Build after major changes
-
 ✔ Give complete replaceable files
-
 
 Never:
 
-
 ✘ Partial snippets unless requested
-
-
 
 ====================================================
 
 CURRENT STOPPING POINT
 ====================================================
 
-
-Inventory V3 Product Master completed.
-
+Inventory V4 Core Stock Management completed.
 
 Next milestone:
 
+Batch Management & Expiry Tracking
 
-Inventory V4 Stock Management.
+Next session tasks:
 
-
-Next session task:
-
-
-Build Stock Management System.
-
-
-Start with:
-
-
-- Stock Service
-
-- Stock In Workflow
-
-- Stock Movement System
-
-
+- Batch Number Management
+- Expiry Date Management
+- Batch-wise Inventory
+- FIFO Stock Consumption
 
 ====================================================
 
 AFTER INVENTORY
 ====================================================
-
 
 Supplier Management
 
@@ -572,55 +477,36 @@ Business Intelligence Layer
 
 Deployment
 
-
-
 ====================================================
 
 LONG TERM GOAL
 ====================================================
 
-
 APOTHIKA Intelligence Layer
 
-
 - Business Health Score
-
 - Predictive Purchasing
-
 - Inventory Intelligence
-
 - Cash Flow Prediction
-
 - Business Recommendations
-
 - Decision Engine
-
 - Simulation Mode
-
-
 
 ====================================================
 
 NEXT CHAT PROMPT
 ====================================================
 
-
 Continue APOTHIKA from this document.
-
 
 Treat this as the latest project state.
 
-
 Do not restart architecture.
-
 
 Continue from Inventory V4.
 
-
 Current task:
 
-
-Build Stock Management System.
-
+Implement Batch Management and Expiry Tracking.
 
 Provide complete replaceable files only.
