@@ -1,58 +1,74 @@
 import { Link } from "react-router-dom";
 import Logo from "../brand/Logo";
 
-function Navbar() {
-  return (
-    <header className="landing-navbar">
 
-      <div className="landing-logo">
-        <Logo />
-      </div>
+function Navbar(){
 
-      <nav className="landing-nav">
 
-        <a href="#features">
-          Features
-        </a>
+return(
 
-        <a href="#industries">
-          Industries
-        </a>
+<nav className="navbar">
 
-        <a href="#ai">
-          AI
-        </a>
 
-        <a href="#logistics">
-          Logistics
-        </a>
+<Logo />
 
-        <a href="#pricing">
-          Pricing
-        </a>
 
-      </nav>
 
-      <div className="landing-actions">
+<div className="nav-links">
 
-        <Link
-          to="/"
-          className="nav-login"
-        >
-          Login
-        </Link>
 
-        <Link
-          to="/register"
-          className="nav-register"
-        >
-          Start Free
-        </Link>
+<a href="#industries">
+Industries
+</a>
 
-      </div>
 
-    </header>
-  );
+<a href="#features">
+Features
+</a>
+
+
+<a href="#ai">
+AI Intelligence
+</a>
+
+
+<a href="#logistics">
+Logistics
+</a>
+
+
+</div>
+
+
+
+<div className="nav-actions">
+
+
+<Link
+to="/login"
+className="nav-login"
+>
+Login
+</Link>
+
+
+
+<Link
+to="/register"
+className="nav-start"
+>
+Start Free
+</Link>
+
+
+</div>
+
+
+</nav>
+
+);
+
 }
+
 
 export default Navbar;

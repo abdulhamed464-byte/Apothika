@@ -1,28 +1,28 @@
 function Logo(){
 
-return (
+return(
 
 <div className="brand-logo">
 
 
-<div className="logo-symbol">
+<div className="brand-symbol">
 
 A
 
 </div>
 
 
-<div className="logo-text">
+<div className="brand-text">
 
 
-<h2>
+<h1>
 APOTHIKA
-</h2>
+</h1>
 
 
-<span>
-Intelligent ERP
-</span>
+<p>
+INTELLIGENT BUSINESS OS
+</p>
 
 
 </div>

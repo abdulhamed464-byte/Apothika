@@ -1,236 +1,146 @@
-import { useState } from "react";
-
-
 function LogisticsSection(){
 
-const domains=[
 
+const operations=[
 
 {
-name:"Pharmacy ERP",
-description:
-"Complete pharmacy management with inventory, expiry tracking and intelligent purchasing.",
-features:[
-"Batch Management",
-"Expiry Alerts",
-"Prescription Management"
-]
+icon:"🏭",
+title:"Manufacturing Control",
+desc:"Manage production planning, raw materials, workflows and finished goods."
 },
 
 
-
 {
-name:"Retail ERP",
-description:
-"Manage stores, billing, customers and daily operations.",
-features:[
-"POS Billing",
-"Customer Management",
-"Sales Analytics"
-]
+icon:"📦",
+title:"Warehouse Intelligence",
+desc:"Control stock movement, locations, transfers and inventory accuracy."
 },
 
 
-
 {
-name:"Supermarket ERP",
-description:
-"Control large inventory and high volume sales.",
-features:[
-"Barcode System",
-"Stock Control",
-"Supplier Management"
-]
+icon:"🚚",
+title:"Logistics Management",
+desc:"Track deliveries, routes, vehicles and transportation performance."
 },
 
 
-
 {
-name:"Restaurant ERP",
-description:
-"Manage kitchen, orders and restaurant operations.",
-features:[
-"Order Management",
-"Kitchen Control",
-"Inventory"
-]
+icon:"🛒",
+title:"Procurement",
+desc:"Manage suppliers, purchase orders and purchasing workflows."
 },
 
 
-
 {
-name:"Warehouse ERP",
-description:
-"Complete warehouse visibility and stock movement.",
-features:[
-"Stock Tracking",
-"Transfers",
-"Reports"
-]
+icon:"🔗",
+title:"Supply Chain",
+desc:"Connect suppliers, inventory and customers in one ecosystem."
 },
 
 
-
 {
-name:"Manufacturing ERP",
-description:
-"Production planning and raw material management.",
-features:[
-"Production",
-"Material Planning",
-"Cost Control"
-]
-},
-
-
-
-{
-name:"Hospital ERP",
-description:
-"Healthcare operations management platform.",
-features:[
-"Patient Management",
-"Inventory",
-"Billing"
-]
-},
-
-
-
-{
-name:"Electronics ERP",
-description:
-"Manage products, warranty and service.",
-features:[
-"Serial Tracking",
-"Service Management",
-"Inventory"
-]
-},
-
-
-
-{
-name:"Construction ERP",
-description:
-"Manage projects, materials and workforce.",
-features:[
-"Project Tracking",
-"Material Control",
-"Cost Analysis"
-]
-},
-
-
-
-{
-name:"Logistics ERP",
-description:
-"Complete transportation management system.",
-features:[
-"Fleet Tracking",
-"Fuel Management",
-"Route Optimization"
-]
+icon:"🏢",
+title:"Enterprise Operations",
+desc:"Operate multiple branches, locations and business units."
 }
-
 
 ];
 
 
-const [active,setActive]=useState(0);
+
+return(
+
+<section className="operations-section">
 
 
+<div className="operations-header">
 
-return (
 
-<section className="domain-section">
+<div className="operations-badge">
+
+🌐 Business Operations Ecosystem
+
+</div>
+
 
 
 <h2>
 
-One ERP.
-Every Industry.
+Everything Connected.
+
+<br/>
+
+<span className="gradient-text">
+
+One Intelligent Platform.
+
+</span>
 
 </h2>
 
 
 
-<div className="domain-slider">
-
-
-<button
-className="slide-btn"
-onClick={()=>setActive(
-active===0
-?
-domains.length-1
-:
-active-1
-)}
->
-←
-</button>
-
-
-
-<div className="domain-card">
-
-
-<h3>
-
-{domains[active].name}
-
-</h3>
-
-
 <p>
 
-{domains[active].description}
+From manufacturing to delivery,
+APOTHIKA connects every operational process
+into one unified ERP ecosystem.
 
 </p>
 
 
+</div>
 
-<div className="grid">
+
+
+
+
+<div className="operations-grid">
 
 
 {
-domains[active].features.map(item=>(
+
+operations.map((item)=>(
+
 
 <div
-className="glass-box"
-key={item}
+
+className="operation-card"
+
+key={item.title}
+
 >
 
-{item}
+
+<div className="operation-icon">
+
+{item.icon}
 
 </div>
+
+
+
+<h3>
+
+{item.title}
+
+</h3>
+
+
+
+<p>
+
+{item.desc}
+
+</p>
+
+
+</div>
+
 
 ))
+
 }
-
-
-</div>
-
-
-</div>
-
-
-
-<button
-className="slide-btn"
-onClick={()=>setActive(
-(active+1)
-%
-domains.length
-)}
->
-
-→
-
-</button>
-
 
 
 </div>
@@ -240,6 +150,7 @@ domains.length
 </section>
 
 );
+
 
 }
 

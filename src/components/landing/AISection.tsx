@@ -1,67 +1,131 @@
 function AISection(){
 
-return (
+
+const intelligence=[
+
+{
+icon:"🔮",
+title:"Demand Prediction",
+desc:"AI analyses sales patterns and predicts future product demand."
+},
+
+
+{
+icon:"⚡",
+title:"Smart Replenishment",
+desc:"Automatically recommends when and how much stock to reorder."
+},
+
+
+{
+icon:"📈",
+title:"Business Forecasting",
+desc:"Understand trends, revenue opportunities and operational risks."
+},
+
+
+{
+icon:"🤖",
+title:"Decision Intelligence",
+desc:"Turn business data into actionable recommendations."
+}
+
+];
+
+
+
+return(
 
 <section className="ai-section">
 
 
+<div className="ai-header">
+
+
+<div className="ai-badge">
+
+🤖 APOTHIKA Intelligence Layer
+
+</div>
+
+
+
 <h2>
-APOTHIKA Intelligence Layer
+
+Your Business.
+<br/>
+
+<span className="gradient-text">
+
+Powered by Intelligence.
+
+</span>
+
 </h2>
 
 
+
 <p>
 
-Future ready AI system that predicts demand,
-optimizes inventory and helps businesses make
-better decisions.
+Future-ready AI systems that predict demand,
+optimise operations and help businesses make
+smarter decisions.
 
 </p>
 
-
-
-<div className="grid">
-
-
-<div className="glass-box">
-
-<h3>
-Demand Prediction
-</h3>
-
-<p>
-AI forecasts future sales and purchasing requirements.
-</p>
 
 </div>
 
 
 
-<div className="glass-box">
 
-<h3>
-Inventory Intelligence
-</h3>
 
-<p>
-Smart stock analysis and optimization.
-</p>
+<div className="ai-grid">
+
+
+{
+
+intelligence.map((item)=>(
+
+
+<div
+
+className="ai-card-box"
+
+key={item.title}
+
+>
+
+
+<div className="ai-icon">
+
+{item.icon}
 
 </div>
 
 
 
-<div className="glass-box">
-
 <h3>
-Business Decisions
+
+{item.title}
+
 </h3>
 
+
+
 <p>
-Data driven recommendations for growth.
+
+{item.desc}
+
 </p>
 
+
 </div>
+
+
+))
+
+}
 
 
 </div>
@@ -71,6 +135,7 @@ Data driven recommendations for growth.
 </section>
 
 );
+
 
 }
 

@@ -1,4 +1,4 @@
-import Logo from "../components/brand/Logo";
+import Navbar from "../components/landing/Navbar";
 
 import Hero from "../components/landing/Hero";
 import Industries from "../components/landing/Industries";
@@ -12,41 +12,37 @@ import "../styles/landing.css";
 
 function Landing(){
 
-  return (
 
-    <div className="landing-page">
+return(
 
-
-      <header className="landing-header">
-
-        <Logo />
-
-      </header>
+<div className="landing-page">
 
 
-
-      <main>
-
-        <Hero />
-
-        <Industries />
-
-        <Features />
-
-        <AISection />
-
-        <LogisticsSection />
-
-      </main>
+<Navbar />
 
 
+<Hero />
 
-      <Footer />
+
+<Industries />
 
 
-    </div>
+<Features />
 
-  );
+
+<AISection />
+
+
+<LogisticsSection />
+
+
+<Footer />
+
+
+</div>
+
+);
+
 
 }
 

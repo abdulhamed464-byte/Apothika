@@ -4,207 +4,250 @@ import { Link } from "react-router-dom";
 function Hero() {
 
 
-  return (
+return (
 
-    <section className="hero">
+<section className="hero">
 
 
-      <div className="hero-glow gold"></div>
-      <div className="hero-glow blue"></div>
-      <div className="hero-glow red"></div>
+<div className="hero-content">
 
 
+<div className="hero-badge">
 
-      <div className="hero-content">
+🚀 AI Powered Enterprise ERP Platform
 
+</div>
 
-        <div className="hero-badge">
 
-          🚀 Multi-Domain Intelligent Business Operating System
 
-        </div>
+<h1>
 
+One Platform.
 
+<br />
 
-        <h1>
+<span className="gradient-text">
 
-          One Platform.
+Every Business.
 
-          <br />
+</span>
 
-          <span className="gradient-text">
-            Every Business.
-          </span>
+</h1>
 
-        </h1>
 
 
+<p>
 
-        <p>
+APOTHIKA connects inventory, sales, purchasing,
+warehouse, manufacturing, pharmacy, retail,
+logistics and AI intelligence into one powerful
+business operating system.
 
-          APOTHIKA unifies Inventory, Sales, Purchase,
-          Warehouse, Manufacturing, Logistics and AI
-          into one powerful cloud ERP platform.
+</p>
 
-        </p>
 
 
 
+<div className="hero-buttons">
 
-        <div className="hero-buttons">
 
+<Link
+to="/register"
+className="primary-btn"
+>
 
-          <Link
-            to="/register"
-            className="primary-btn"
-          >
+Start Free
 
-            Start Free
+</Link>
 
-          </Link>
 
 
+<Link
+to="/login"
+className="secondary-btn"
+>
 
+Login
 
-          <Link
-            to="/login"
-            className="secondary-btn"
-          >
+</Link>
 
-            Login
 
-          </Link>
+</div>
 
 
-        </div>
 
 
+<div className="hero-trust">
 
-        <div className="hero-trust">
 
+<span>
+✓ Multi Industry
+</span>
 
-          <span>
-            ✓ Multi Industry
-          </span>
 
+<span>
+✓ Cloud ERP
+</span>
 
-          <span>
-            ✓ Cloud ERP
-          </span>
 
+<span>
+✓ AI Ready
+</span>
 
-          <span>
-            ✓ AI Ready
-          </span>
 
+</div>
 
-        </div>
 
+</div>
 
-      </div>
 
 
 
 
+<div className="hero-dashboard">
 
 
-      <div className="hero-dashboard">
+<div className="erp-window">
 
 
-        <div className="dashboard-card">
 
+<div className="window-header">
 
-          <div className="card-header">
+APOTHIKA Enterprise Control
 
-            APOTHIKA Intelligence
+</div>
 
-          </div>
 
 
 
+<div className="stats">
 
-          <div className="metric">
 
 
-            <h2>
-              £2.4M
-            </h2>
+<div className="stat-card">
 
-            <p>
-              Inventory Value
-            </p>
+<h2>
+24,850
+</h2>
 
+<p>
+Inventory Items
+</p>
 
-          </div>
+</div>
 
 
 
 
+<div className="stat-card">
 
-          <div className="metric-row">
+<h2>
+£2.4M
+</h2>
 
+<p>
+Sales Revenue
+</p>
 
-            <div>
+</div>
 
-              <h3>
-                24,850
-              </h3>
 
-              <span>
-                Products
-              </span>
 
-            </div>
 
+<div className="stat-card">
 
+<h2>
+850
+</h2>
 
+<p>
+Suppliers
+</p>
 
-            <div>
+</div>
 
-              <h3>
-                11
-              </h3>
 
-              <span>
-                Modules
-              </span>
 
-            </div>
 
+<div className="stat-card">
 
-          </div>
+<h2>
+12
+</h2>
 
+<p>
+Warehouses
+</p>
 
+</div>
 
 
 
-          <div className="ai-box">
+</div>
 
 
-            🤖 AI Business Intelligence
 
-            <br />
 
-            Predict.
-            Analyse.
-            Grow.
 
 
-          </div>
+<div className="ai-card">
 
 
+🤖 APOTHIKA Intelligence
 
-        </div>
 
+<h3>
 
-      </div>
+AI Demand Forecast Active
 
+</h3>
 
 
-    </section>
+<p>
 
+Predict stock, analyse sales and optimise business decisions.
 
-  );
+</p>
+
+
+</div>
+
+
+
+
+
+
+
+<div className="operations-card">
+
+
+🏭 Enterprise Operations
+
+
+<p>
+
+Manufacturing • Pharmacy • Retail • Hospital • Logistics
+
+</p>
+
+
+</div>
+
+
+
+
+</div>
+
+
+</div>
+
+
+
+
+</section>
+
+
+);
 
 }
 
