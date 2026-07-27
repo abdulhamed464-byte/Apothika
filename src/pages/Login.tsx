@@ -2,12 +2,11 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import AuthService from "../services/Auth/AuthService";
-
+import Logo from "../components/brand/Logo";
 
 function Login() {
 
   const navigate = useNavigate();
-
 
   const [email, setEmail] = useState("");
 
@@ -16,8 +15,6 @@ function Login() {
   const [error, setError] = useState("");
 
   const [loading, setLoading] = useState(false);
-
-
 
   async function handleLogin(
     e: React.FormEvent<HTMLFormElement>
@@ -29,12 +26,10 @@ function Login() {
 
     setLoading(true);
 
-
     const response = await AuthService.login({
       email,
       password,
     });
-
 
     if (!response.success) {
 
@@ -46,60 +41,36 @@ function Login() {
 
     }
 
-
     navigate("/dashboard");
-
 
     setLoading(false);
 
   }
 
-
-
   return (
 
     <div className="min-h-screen login-page">
-
 
       <div className="glow glow-left"></div>
 
       <div className="glow glow-right"></div>
 
-
-
       <div className="glass-card">
 
-
-        <div className="logo-box">
-
-          <div className="logo-inner">
-            A
-          </div>
-
-        </div>
-
-
-
-        <h1 className="company-name">
-          APOTHIKA
-        </h1>
-
+        <Logo size="large" />
 
         <div className="underline"></div>
 
-
-
         <p className="tagline">
-          Manage Inventory. Simplify Billing. Grow Your Business.
+          Manage Inventory.
+          Simplify Billing.
+          Grow Your Business.
         </p>
-
-
 
         <form
           onSubmit={handleLogin}
           className="register-form"
         >
-
 
           <input
             type="email"
@@ -111,8 +82,6 @@ function Login() {
             }
           />
 
-
-
           <input
             type="password"
             placeholder="Password"
@@ -123,22 +92,18 @@ function Login() {
             }
           />
 
-
-
           {error && (
 
             <p
               style={{
-                color:"#ff6b6b",
-                textAlign:"center"
+                color: "#ff6b6b",
+                textAlign: "center",
               }}
             >
               {error}
             </p>
 
           )}
-
-
 
           <button
             type="submit"
@@ -148,12 +113,9 @@ function Login() {
 
             {loading
               ? "Logging in..."
-              : "Login"
-            }
+              : "Login"}
 
           </button>
-
-
 
           <p className="login-link">
 
@@ -165,19 +127,14 @@ function Login() {
 
           </p>
 
-
-
         </form>
 
-
       </div>
-
 
     </div>
 
   );
 
 }
-
 
 export default Login;

@@ -1,76 +1,210 @@
-function Hero(){
-
-return (
-
-<section className="hero">
+import { Link } from "react-router-dom";
 
 
-<div className="hero-content">
+function Hero() {
 
 
-<h1>
+  return (
 
-The Intelligent Operating System
-for Modern Businesses
-
-</h1>
+    <section className="hero">
 
 
-<p>
-
-APOTHIKA connects inventory,
-sales, logistics, finance and AI
-into one powerful business platform.
-
-</p>
-
-
-<div className="hero-buttons">
-
-<button>
-Start Your Business
-</button>
-
-
-<button className="secondary-btn">
-Explore Platform
-</button>
-
-
-</div>
-
-
-</div>
+      <div className="hero-glow gold"></div>
+      <div className="hero-glow blue"></div>
+      <div className="hero-glow red"></div>
 
 
 
-<div className="hero-card">
+      <div className="hero-content">
 
 
-<h3>
-APOTHIKA Intelligence Engine
-</h3>
+        <div className="hero-badge">
+
+          🚀 Multi-Domain Intelligent Business Operating System
+
+        </div>
 
 
-<ul>
 
-<li>Inventory Intelligence</li>
+        <h1>
 
-<li>Predictive Purchasing</li>
+          One Platform.
 
-<li>Business Analytics</li>
+          <br />
 
-<li>Multi Industry ERP</li>
+          <span className="gradient-text">
+            Every Business.
+          </span>
 
-</ul>
-
-
-</div>
+        </h1>
 
 
-</section>
 
-);
+        <p>
+
+          APOTHIKA unifies Inventory, Sales, Purchase,
+          Warehouse, Manufacturing, Logistics and AI
+          into one powerful cloud ERP platform.
+
+        </p>
+
+
+
+
+        <div className="hero-buttons">
+
+
+          <Link
+            to="/register"
+            className="primary-btn"
+          >
+
+            Start Free
+
+          </Link>
+
+
+
+
+          <Link
+            to="/"
+            className="secondary-btn"
+          >
+
+            Login
+
+          </Link>
+
+
+        </div>
+
+
+
+        <div className="hero-trust">
+
+
+          <span>
+            ✓ Multi Industry
+          </span>
+
+
+          <span>
+            ✓ Cloud ERP
+          </span>
+
+
+          <span>
+            ✓ AI Ready
+          </span>
+
+
+        </div>
+
+
+      </div>
+
+
+
+
+
+
+      <div className="hero-dashboard">
+
+
+        <div className="dashboard-card">
+
+
+          <div className="card-header">
+
+            APOTHIKA Intelligence
+
+          </div>
+
+
+
+
+          <div className="metric">
+
+
+            <h2>
+              £2.4M
+            </h2>
+
+            <p>
+              Inventory Value
+            </p>
+
+
+          </div>
+
+
+
+
+
+          <div className="metric-row">
+
+
+            <div>
+
+              <h3>
+                24,850
+              </h3>
+
+              <span>
+                Products
+              </span>
+
+            </div>
+
+
+
+
+            <div>
+
+              <h3>
+                11
+              </h3>
+
+              <span>
+                Modules
+              </span>
+
+            </div>
+
+
+          </div>
+
+
+
+
+
+          <div className="ai-box">
+
+
+            🤖 AI Business Intelligence
+
+            <br />
+
+            Predict.
+            Analyse.
+            Grow.
+
+
+          </div>
+
+
+
+        </div>
+
+
+      </div>
+
+
+
+    </section>
+
+
+  );
 
 }
 
