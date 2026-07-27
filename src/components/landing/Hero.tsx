@@ -67,7 +67,7 @@ function Hero() {
 
 
           <Link
-            to="/"
+            to="/login"
             className="secondary-btn"
           >
 

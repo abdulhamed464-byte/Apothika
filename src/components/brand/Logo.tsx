@@ -1,35 +1,38 @@
-interface Props {
-  size?: "small" | "medium" | "large";
+function Logo(){
+
+return (
+
+<div className="brand-logo">
+
+
+<div className="logo-symbol">
+
+A
+
+</div>
+
+
+<div className="logo-text">
+
+
+<h2>
+APOTHIKA
+</h2>
+
+
+<span>
+Intelligent ERP
+</span>
+
+
+</div>
+
+
+</div>
+
+);
+
 }
 
-function Logo({
-  size = "medium",
-}: Props) {
-  return (
-    <div className={`apothika-logo ${size}`}>
-
-      <div className="logo-symbol">
-
-        <div className="logo-core">
-          A
-        </div>
-
-      </div>
-
-      <div className="logo-text">
-
-        <span>
-          APOTHIKA
-        </span>
-
-        <small>
-          INTELLIGENT BUSINESS OPERATING SYSTEM
-        </small>
-
-      </div>
-
-    </div>
-  );
-}
 
 export default Logo;

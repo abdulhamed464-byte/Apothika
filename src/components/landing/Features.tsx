@@ -1,5 +1,17 @@
 function Features(){
 
+const features=[
+
+"Inventory Management",
+"Sales & Billing",
+"Warehouse Control",
+"Supplier Management",
+"Customer Intelligence",
+"Reports & Analytics"
+
+];
+
+
 return (
 
 <section className="section">
@@ -10,37 +22,32 @@ Enterprise Features
 </h2>
 
 
+
 <div className="grid">
 
 
-<div className="glass-box">
-Inventory Management
+{
+features.map(feature=>(
+
+<div
+className="glass-box"
+key={feature}
+>
+
+<h3>
+{feature}
+</h3>
+
+
+<p>
+Powerful tools built for modern enterprises.
+</p>
+
+
 </div>
 
-
-<div className="glass-box">
-Sales & Billing
-</div>
-
-
-<div className="glass-box">
-Warehouse Control
-</div>
-
-
-<div className="glass-box">
-Supplier Management
-</div>
-
-
-<div className="glass-box">
-Customer Intelligence
-</div>
-
-
-<div className="glass-box">
-Reports & Analytics
-</div>
+))
+}
 
 
 </div>

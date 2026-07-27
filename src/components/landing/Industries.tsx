@@ -26,20 +26,35 @@ One ERP. Every Industry.
 </h2>
 
 
+<p className="section-subtitle">
+A flexible operating system designed for every business domain.
+</p>
+
+
+
 <div className="grid">
 
 
 {
-industries.map(item=>(
+industries.map((item)=>(
 
-<div className="glass-box" key={item}>
+<div
+className="glass-box"
+key={item}
+>
 
+<h3>
 {item}
+</h3>
+
+<p>
+Complete business management solution.
+</p>
+
 
 </div>
 
 ))
-
 }
 
 

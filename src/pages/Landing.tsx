@@ -1,3 +1,5 @@
+import Logo from "../components/brand/Logo";
+
 import Hero from "../components/landing/Hero";
 import Industries from "../components/landing/Industries";
 import Features from "../components/landing/Features";
@@ -10,25 +12,41 @@ import "../styles/landing.css";
 
 function Landing(){
 
-return (
+  return (
 
-<div className="landing-page">
+    <div className="landing-page">
 
-<Hero />
 
-<Industries />
+      <header className="landing-header">
 
-<Features />
+        <Logo />
 
-<AISection />
+      </header>
 
-<LogisticsSection />
 
-<Footer />
 
-</div>
+      <main>
 
-);
+        <Hero />
+
+        <Industries />
+
+        <Features />
+
+        <AISection />
+
+        <LogisticsSection />
+
+      </main>
+
+
+
+      <Footer />
+
+
+    </div>
+
+  );
 
 }
 

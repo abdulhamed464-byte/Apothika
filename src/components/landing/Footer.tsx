@@ -4,13 +4,23 @@ return (
 
 <footer className="footer">
 
-<h3>
+
+<h2>
 APOTHIKA
-</h3>
+</h2>
 
 
 <p>
+
 Intelligent Business Operating System
+
+</p>
+
+
+<p>
+
+© 2026 APOTHIKA. All rights reserved.
+
 </p>
 
 
