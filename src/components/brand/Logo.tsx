@@ -7,9 +7,28 @@ return(
 
 <div className="brand-symbol">
 
-A
+
+<div className="ai-orbit">
+
+<span className="node node-one"></span>
+
+<span className="node node-two"></span>
+
+<span className="node node-three"></span>
 
 </div>
+
+
+
+<span className="logo-letter">
+A
+</span>
+
+
+</div>
+
+
+
 
 
 <div className="brand-text">

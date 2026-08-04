@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+
 import { ProductService } from "../services/inventory/ProductService";
 
 import type {
@@ -15,7 +16,7 @@ import ProductForm from "../components/inventory/ProductForm";
 import InventorySidePanel from "../components/inventory/InventorySidePanel";
 import SearchFilterBar from "../components/shared/SearchFilterBar";
 import InventoryScannerButton from "../components/inventory/InventoryScannerButton";
-
+import ProductDetailsModal from "../components/inventory/ProductDetailsModal";
 import "../styles/inventory.css";
 
 
@@ -25,7 +26,6 @@ const WORKSPACE_ID =
 
 
 function Inventory(){
-
 
 const [products,setProducts] =
 useState<InventoryProduct[]>([]);
@@ -230,8 +230,7 @@ product.sku
 
 
 
-const stock =
-
+const stockIn =
 product.stock_entries?.reduce(
 
 (total,item)=>
@@ -242,6 +241,23 @@ total + Number(item.quantity || 0),
 
 ) || 0;
 
+
+
+const stockOut =
+product.stock_out_entries?.reduce(
+
+(total,item)=>
+
+total + Number(item.quantity || 0),
+
+0
+
+) || 0;
+
+
+
+const stock =
+stockIn - stockOut;
 
 
 
@@ -552,10 +568,6 @@ Manage products, stock and inventory intelligence.
 </div>
 
 
-
-
-
-
 <InventoryStats
 
 products={products}
@@ -722,56 +734,19 @@ products={products}
 
 
 <InventorySidePanel />
-
-
-
-
-
-
-
 {
+selectedProduct && (
 
-selectedProduct &&
+<ProductDetailsModal
 
-<div className="inventory-main-card">
+product={selectedProduct}
 
+onClose={()=>setSelectedProduct(null)}
 
-<h3>
-Product Details
-</h3>
+/>
 
-
-<p>
-Name: {selectedProduct.product_name}
-</p>
-
-
-<p>
-SKU: {selectedProduct.sku}
-</p>
-
-
-<p>
-Barcode: {selectedProduct.barcode || "-"}
-</p>
-
-
-
-<button
-
-onClick={()=>setSelectedProduct(null)}
-
->
-
-Close
-
-</button>
-
-
-</div>
-
+)
 }
-
 
 
 
@@ -779,9 +754,6 @@ Close
 
 );
 
-
 }
-
-
 
 export default Inventory;

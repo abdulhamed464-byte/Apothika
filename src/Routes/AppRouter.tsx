@@ -11,6 +11,7 @@ import Inventory from "../pages/Inventory";
 import Purchases from "../pages/Purchases";
 import StockIn from "../pages/StockIn";
 import StockOut from "../pages/StockOut";
+import StockAdjustment from "../pages/StockAdjustment";
 
 
 import DashboardLayout from "../layouts/dashboard/DashboardLayout";
@@ -29,6 +30,8 @@ return (
 
 
 
+
+
 {/* Public Landing Page */}
 
 <Route
@@ -38,6 +41,8 @@ path="/"
 element={<Landing />}
 
 />
+
+
 
 
 
@@ -52,6 +57,7 @@ element={<Login />}
 />
 
 
+
 <Route
 
 path="/register"
@@ -59,6 +65,9 @@ path="/register"
 element={<Register />}
 
 />
+
+
+
 
 
 
@@ -74,6 +83,7 @@ element={<DashboardLayout />}
 >
 
 
+
 <Route
 
 index
@@ -81,6 +91,8 @@ index
 element={<Dashboard />}
 
 />
+
+
 
 
 
@@ -94,6 +106,8 @@ element={<Inventory />}
 
 
 
+
+
 <Route
 
 path="inventory/stock-in"
@@ -101,6 +115,8 @@ path="inventory/stock-in"
 element={<StockIn />}
 
 />
+
+
 
 
 
@@ -114,6 +130,20 @@ element={<StockOut />}
 
 
 
+
+
+<Route
+
+path="inventory/adjustment"
+
+element={<StockAdjustment />}
+
+/>
+
+
+
+
+
 <Route
 
 path="purchases"
@@ -124,7 +154,10 @@ element={<Purchases />}
 
 
 
+
+
 </Route>
+
 
 
 
@@ -139,7 +172,6 @@ element={<Purchases />}
 
 
 }
-
 
 
 export default AppRouter;

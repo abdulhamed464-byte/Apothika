@@ -1,9 +1,10 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 
 function InventorySidePanel() {
 
-
+const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
 
@@ -46,7 +47,37 @@ function InventorySidePanel() {
         open &&
 
         <div className="inventory-side-panel">
+<div className="side-card">
 
+<h3>
+Stock Operations
+</h3>
+
+
+<p>
+Manage inventory movement
+</p>
+
+
+<button
+onClick={() =>
+navigate("/dashboard/inventory/stock-in")
+}
+>
++ Stock In
+</button>
+
+
+<button
+onClick={() =>
+navigate("/dashboard/inventory/stock-out")
+}
+>
+- Stock Out
+</button>
+
+
+</div>
 
           <div className="side-card">
 

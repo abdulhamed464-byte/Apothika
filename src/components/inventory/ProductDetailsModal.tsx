@@ -1,77 +1,612 @@
-import type { InventoryProduct } from "../../services/inventory/ProductService";
+import { useEffect, useState } from "react";
+
+import type { InventoryProduct } 
+from "../../services/inventory/ProductService";
+
+import type { InventoryBatch }
+from "../../types/batch";
+
+import { BatchService }
+from "../../services/inventory/BatchService";
+
+import { StockHistoryService }
+from "../../services/inventory/StockHistoryService";
+
 
 interface Props {
   product: InventoryProduct;
   onClose: () => void;
 }
 
+
+interface StockHistoryItem {
+
+  id:string;
+
+  type:string;
+
+  quantity:number;
+
+  date:string;
+
+  invoice?:string | null;
+
+}
+
+
+
 function ProductDetailsModal({
   product,
   onClose
 }: Props) {
-  return (
-    <div
-      style={{
-        position: "fixed",
-        inset: 0,
-        background: "rgba(0,0,0,0.55)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 3000
-      }}
-    >
-      <div
-        style={{
-          background: "#ffffff",
-          borderRadius: "18px",
-          padding: "24px",
-          width: "420px",
-          maxWidth: "95%",
-          boxShadow: "0 20px 50px rgba(0,0,0,.25)"
-        }}
-      >
-        <h2 style={{ marginTop: 0 }}>
-          Product Details
-        </h2>
 
-        {product.image_url && (
-          <img
-            src={product.image_url}
-            alt={product.product_name}
-            style={{
-              width: "180px",
-              height: "180px",
-              objectFit: "cover",
-              borderRadius: "12px",
-              display: "block",
-              margin: "0 auto 20px"
-            }}
-          />
-        )}
 
-        <p><strong>Name:</strong> {product.product_name}</p>
-        <p><strong>SKU:</strong> {product.sku}</p>
-        <p><strong>Barcode:</strong> {product.barcode || "-"}</p>
-        <p><strong>Category:</strong> {product.category || "-"}</p>
-        <p><strong>Brand:</strong> {product.brand || "-"}</p>
-        <p><strong>Selling Price:</strong> ₹{product.selling_price}</p>
-        <p><strong>Status:</strong> {product.status}</p>
+console.log("VIEW PRODUCT:", product);
 
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "flex-end",
-            marginTop: "24px"
-          }}
-        >
-          <button onClick={onClose}>
-            Close
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+
+
+const [batches,setBatches] =
+useState<InventoryBatch[]>([]);
+
+
+const [history,setHistory] =
+useState<StockHistoryItem[]>([]);
+
+
+
+
+
+useEffect(()=>{
+
+loadBatches();
+
+loadHistory();
+
+},[product.id]);
+
+
+
+
+
+
+async function loadBatches(){
+
+
+if(!product.id)
+
+return;
+
+
+
+try{
+
+
+const data =
+await BatchService.getProductBatches(
+product.id
+);
+
+
+setBatches(data);
+
+
 }
+
+catch(error){
+
+
+console.error(
+"Batch loading failed",
+error
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+async function loadHistory(){
+
+
+if(!product.id)
+
+return;
+
+
+
+try{
+
+
+const data =
+await StockHistoryService.getProductHistory(
+product.id
+);
+
+
+setHistory(data);
+
+
+}
+
+catch(error){
+
+
+console.error(
+"History loading failed",
+error
+);
+
+
+}
+
+
+}
+
+
+
+
+
+
+const totalStockIn =
+product.stock_entries?.reduce(
+
+(total,item)=>
+
+total + Number(item.quantity || 0),
+
+0
+
+) || 0;
+
+
+
+
+const totalStockOut =
+product.stock_out_entries?.reduce(
+
+(total,item)=>
+
+total + Number(item.quantity || 0),
+
+0
+
+) || 0;
+
+
+
+
+const currentStock =
+totalStockIn - totalStockOut;
+
+
+
+
+const stockValue =
+currentStock *
+Number(product.purchase_price || 0);
+
+
+
+
+const lowStock =
+currentStock <= Number(product.minimum_stock);
+
+
+
+
+
+return (
+
+<div
+
+style={{
+
+position:"fixed",
+
+inset:0,
+
+background:"rgba(0,0,0,0.55)",
+
+display:"flex",
+
+justifyContent:"center",
+
+alignItems:"center",
+
+zIndex:3000
+
+}}
+
+>
+
+
+<div
+
+style={{
+
+background:"#ffffff",
+
+borderRadius:"18px",
+
+padding:"24px",
+
+width:"420px",
+
+maxWidth:"95%",
+
+maxHeight:"90vh",
+
+overflowY:"auto",
+
+boxShadow:"0 20px 50px rgba(0,0,0,.25)"
+
+}}
+
+>
+
+
+<h2
+
+style={{
+
+marginTop:0,
+
+color:"#111827"
+
+}}
+
+>
+
+Product Details
+
+</h2>
+
+
+
+
+
+<div
+
+style={{
+
+display:"grid",
+
+gap:"12px",
+
+color:"#111827"
+
+}}
+
+>
+
+
+<div>
+<strong>Name:</strong> {product.product_name}
+</div>
+
+
+<div>
+<strong>SKU:</strong> {product.sku}
+</div>
+
+
+<div>
+<strong>Barcode:</strong> {product.barcode || "-"}
+</div>
+
+
+<div>
+<strong>Category:</strong> {product.category || "-"}
+</div>
+
+
+<div>
+<strong>Brand:</strong> {product.brand || "-"}
+</div>
+
+
+<div>
+<strong>Selling Price:</strong> ₹{product.selling_price}
+</div>
+
+
+<div>
+<strong>Status:</strong> {product.status}
+</div>
+
+
+</div>
+
+
+
+
+
+<hr style={{margin:"20px 0"}} />
+
+
+
+<h3 style={{color:"#111827"}}>
+Inventory Summary
+</h3>
+
+
+
+<div
+
+style={{
+
+display:"grid",
+
+gap:"12px",
+
+color:"#111827"
+
+}}
+
+>
+
+
+<div>
+<strong>Total Stock In:</strong> {totalStockIn}
+</div>
+
+
+<div>
+<strong>Total Stock Out:</strong> {totalStockOut}
+</div>
+
+
+<div>
+<strong>Current Stock:</strong> {currentStock}
+</div>
+
+
+<div>
+<strong>Inventory Value:</strong> ₹{stockValue}
+</div>
+
+
+<div>
+
+<strong>Status:</strong>{" "}
+
+{
+
+lowStock
+
+?
+
+"Low Stock"
+
+:
+
+"Healthy"
+
+}
+
+</div>
+
+
+</div>
+
+
+
+
+
+
+
+<hr style={{margin:"20px 0"}} />
+
+
+
+<h3 style={{color:"#111827"}}>
+Inventory Movement History
+</h3>
+
+
+
+{
+
+history.length === 0
+
+?
+
+<p style={{color:"#374151"}}>
+No movement history available.
+</p>
+
+
+:
+
+
+history.map(item=>(
+
+
+<div
+
+key={item.id}
+
+style={{
+
+border:"1px solid #e5e7eb",
+
+borderRadius:"10px",
+
+padding:"12px",
+
+marginBottom:"10px",
+
+color:"#111827"
+
+}}
+
+>
+
+
+<div>
+<strong>Date:</strong> {item.date}
+</div>
+
+
+<div>
+<strong>Type:</strong> {item.type}
+</div>
+
+
+<div>
+<strong>Quantity:</strong> {item.quantity}
+</div>
+
+
+<div>
+<strong>Invoice:</strong> {item.invoice || "-"}
+</div>
+
+
+
+</div>
+
+
+))
+
+
+}
+
+
+
+
+
+
+
+<hr style={{margin:"20px 0"}} />
+
+
+
+<h3 style={{color:"#111827"}}>
+Inventory Batches
+</h3>
+
+
+
+{
+
+batches.length === 0
+
+?
+
+<p style={{color:"#374151"}}>
+No batch records available.
+</p>
+
+
+:
+
+
+batches.map(batch=>(
+
+
+<div
+
+key={batch.id}
+
+style={{
+
+border:"1px solid #e5e7eb",
+
+borderRadius:"10px",
+
+padding:"12px",
+
+marginBottom:"10px",
+
+color:"#111827"
+
+}}
+
+>
+
+
+<div>
+<strong>Batch:</strong> {batch.batch_number}
+</div>
+
+
+<div>
+<strong>Quantity Received:</strong> {batch.quantity_received}
+</div>
+
+
+<div>
+<strong>Quantity Available:</strong> {batch.quantity_available}
+</div>
+
+
+<div>
+<strong>Expiry:</strong> {batch.expiry_date || "-"}
+</div>
+
+
+<div>
+<strong>Status:</strong> {batch.status}
+</div>
+
+
+</div>
+
+
+))
+
+
+}
+
+
+
+
+
+
+<div
+
+style={{
+
+display:"flex",
+
+justifyContent:"flex-end",
+
+marginTop:"24px"
+
+}}
+
+>
+
+
+<button onClick={onClose}>
+
+Close
+
+</button>
+
+
+</div>
+
+
+
+</div>
+
+
+</div>
+
+
+);
+
+
+}
+
+
 
 export default ProductDetailsModal;

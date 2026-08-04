@@ -9,6 +9,10 @@ import type { StockOutPayload } from "../types/stockOut";
 const WORKSPACE_ID =
 "4e24cab5-087c-4004-8d80-1098dbbe3ade";
 
+
+const BUSINESS_ID =
+"ba4ce0ce-2380-4657-bd77-324bed8afa1d";
+
 function StockOut(){
 
 const [products,setProducts]=
@@ -98,7 +102,8 @@ setLoading(true);
 const payload:StockOutPayload={
 
 business_id:
-WORKSPACE_ID,
+BUSINESS_ID,
+
 
 product_id:
 form.product_id,

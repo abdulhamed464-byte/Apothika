@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom";
+import { useState } from "react";
 import Logo from "../brand/Logo";
 
 
 function Navbar(){
+
+const [menuOpen,setMenuOpen] = useState(false);
 
 
 return(
@@ -14,30 +17,49 @@ return(
 
 
 
-<div className="nav-links">
+<div 
+className={`nav-links ${menuOpen ? "active" : ""}`}
+>
 
 
-<a href="#industries">
+<a 
+href="#industries"
+onClick={()=>setMenuOpen(false)}
+>
 Industries
 </a>
 
 
-<a href="#features">
+
+<a 
+href="#features"
+onClick={()=>setMenuOpen(false)}
+>
 Features
 </a>
 
 
-<a href="#ai">
+
+<a 
+href="#ai"
+onClick={()=>setMenuOpen(false)}
+>
 AI Intelligence
 </a>
 
 
-<a href="#logistics">
+
+<a 
+href="#logistics"
+onClick={()=>setMenuOpen(false)}
+>
 Logistics
 </a>
 
 
 </div>
+
+
 
 
 
@@ -62,6 +84,24 @@ Start Free
 
 
 </div>
+
+
+
+
+
+<button
+
+className="mobile-menu"
+
+onClick={()=>setMenuOpen(!menuOpen)}
+
+>
+
+☰
+
+</button>
+
+
 
 
 </nav>
