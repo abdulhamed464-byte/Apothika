@@ -1,0 +1,155 @@
+.
+├── PROJECT_STRUCTURE.txt
+├── README.md
+├── apothika-status-report.txt
+├── docs
+│   ├── architecture
+│   │   └── APOTHIKA_ARCHITECTURE.md
+│   ├── database
+│   │   └── APOTHIKA_DATABASE.md
+│   ├── meeting-notes
+│   ├── project
+│   │   ├── APOTHIKA_CHANGELOG.md
+│   │   ├── APOTHIKA_CONTEXT.md
+│   │   ├── APOTHIKA_SESSION.md
+│   │   ├── APOTHIKA_STATUS.md
+│   │   └── APOTHIKA_TODO.md
+│   └── releases
+├── eslint.config.js
+├── index.html
+├── inventory-review.txt
+├── package-lock.json
+├── package.json
+├── project-files.txt
+├── public
+│   ├── favicon.svg
+│   └── icons.svg
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── Routes
+│   │   └── AppRouter.tsx
+│   ├── assets
+│   │   ├── hero.png
+│   │   ├── logo
+│   │   │   ├── apothika-logo-white.svg
+│   │   │   ├── apothika-logo.svg
+│   │   │   └── apothika-symbol.svg
+│   │   ├── react.svg
+│   │   └── vite.svg
+│   ├── components
+│   │   ├── Navbar
+│   │   │   ├── Navbar.css
+│   │   │   └── Navbar.jsx
+│   │   ├── auth
+│   │   │   └── ProtectedRoute.tsx
+│   │   ├── brand
+│   │   │   └── Logo.tsx
+│   │   ├── dashboard
+│   │   │   └── DashboardHeader.tsx
+│   │   ├── inventory
+│   │   │   ├── BarcodeLabel.tsx
+│   │   │   ├── BarcodeScanner.tsx
+│   │   │   ├── InventoryDetails.tsx
+│   │   │   ├── InventoryReports.tsx
+│   │   │   ├── InventoryScannerButton.tsx
+│   │   │   ├── InventorySidePanel.tsx
+│   │   │   ├── InventoryStats.tsx
+│   │   │   ├── InventoryTable.tsx
+│   │   │   ├── ProductDetailsModal.tsx
+│   │   │   ├── ProductForm.tsx
+│   │   │   ├── StockInForm.tsx
+│   │   │   └── StockMovement.tsx
+│   │   ├── landing
+│   │   │   ├── AISection.tsx
+│   │   │   ├── Features.tsx
+│   │   │   ├── Footer.tsx
+│   │   │   ├── Hero.tsx
+│   │   │   ├── Industries.tsx
+│   │   │   ├── LogisticsSection.tsx
+│   │   │   └── Navbar.tsx
+│   │   ├── purchase
+│   │   │   ├── PurchaseAnalytics.tsx
+│   │   │   ├── PurchaseDetails.tsx
+│   │   │   ├── PurchaseForm.tsx
+│   │   │   ├── PurchaseHistory.tsx
+│   │   │   ├── PurchaseReports.tsx
+│   │   │   ├── PurchaseStats.tsx
+│   │   │   └── PurchaseSummary.tsx
+│   │   ├── shared
+│   │   │   ├── ImageUploader.tsx
+│   │   │   ├── Logo.tsx
+│   │   │   ├── SearchBar.tsx
+│   │   │   └── SearchFilterBar.tsx
+│   │   └── sidebar
+│   │       └── Sidebar.tsx
+│   ├── hooks
+│   │   └── useStock.ts
+│   ├── index.css
+│   ├── layouts
+│   │   └── dashboard
+│   │       └── DashboardLayout.tsx
+│   ├── lib
+│   │   └── supabase.ts
+│   ├── main.tsx
+│   ├── pages
+│   │   ├── Dashboard.tsx
+│   │   ├── Inventory.tsx
+│   │   ├── Landing.tsx
+│   │   ├── Login.tsx
+│   │   ├── Purchases.tsx
+│   │   ├── Register.tsx
+│   │   ├── StockAdjustment.tsx
+│   │   ├── StockIn.tsx
+│   │   ├── StockOut.tsx
+│   │   └── TestAuth.tsx
+│   ├── services
+│   │   ├── Auth
+│   │   │   ├── AuthService.ts
+│   │   │   └── Onboarding
+│   │   │       └── OnboardingService.ts
+│   │   ├── auth
+│   │   │   └── AuthSession.ts
+│   │   ├── dashboard
+│   │   │   └── DashboardService.ts
+│   │   ├── inventory
+│   │   │   ├── BarcodeLookupService.ts
+│   │   │   ├── BarcodeService.ts
+│   │   │   ├── BatchService.ts
+│   │   │   ├── ProductService.ts
+│   │   │   ├── SKUService.ts
+│   │   │   ├── StockAdjustmentService.ts
+│   │   │   ├── StockHistoryService.ts
+│   │   │   ├── StockOutService.ts
+│   │   │   └── StockService.ts
+│   │   ├── modules
+│   │   │   └── ModuleService.ts
+│   │   ├── purchase
+│   │   │   └── PurchaseService.ts
+│   │   └── workspace
+│   │       └── WorkspaceService.ts
+│   ├── styles
+│   │   ├── dashboard.css
+│   │   ├── inventory.css
+│   │   ├── landing.css
+│   │   ├── purchase-history.css
+│   │   ├── purchases.css
+│   │   ├── sidebar.css
+│   │   └── theme.css
+│   ├── types
+│   │   ├── auth.ts
+│   │   ├── batch.ts
+│   │   ├── stock.ts
+│   │   ├── stockAdjustment.ts
+│   │   └── stockOut.ts
+│   └── utils
+│       └── barcode
+│           ├── barcodeValidator.ts
+│           └── skuGenerator.ts
+├── tsconfig.app.json
+├── tsconfig.json
+├── tsconfig.node.json
+├── vite
+└── vite.config.ts
+
+40 directories, 113 files

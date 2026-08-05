@@ -3,14 +3,14 @@ import { useEffect, useState } from "react";
 import type { InventoryProduct } 
 from "../../services/inventory/ProductService";
 
+import { StockService }
+from "../../services/inventory/StockService";
+
 import type { InventoryBatch }
 from "../../types/batch";
 
 import { BatchService }
 from "../../services/inventory/BatchService";
-
-import { StockHistoryService }
-from "../../services/inventory/StockHistoryService";
 
 
 interface Props {
@@ -19,48 +19,35 @@ interface Props {
 }
 
 
-interface StockHistoryItem {
-
-  id:string;
-
-  type:string;
-
-  quantity:number;
-
-  date:string;
-
-  invoice?:string | null;
-
-}
-
-
 
 function ProductDetailsModal({
+
   product,
+
   onClose
+
 }: Props) {
 
 
-console.log("VIEW PRODUCT:", product);
+
+console.log(
+  "VIEW PRODUCT:",
+  product
+);
+
 
 
 
 const [batches,setBatches] =
+
 useState<InventoryBatch[]>([]);
-
-
-const [history,setHistory] =
-useState<StockHistoryItem[]>([]);
-
-
-
 
 
 useEffect(()=>{
 
+
 loadBatches();
 
-loadHistory();
 
 },[product.id]);
 
@@ -82,22 +69,30 @@ try{
 
 
 const data =
+
 await BatchService.getProductBatches(
+
 product.id
+
 );
+
 
 
 setBatches(data);
 
 
+
 }
 
 catch(error){
 
 
 console.error(
+
 "Batch loading failed",
+
 error
+
 );
 
 
@@ -108,45 +103,13 @@ error
 
 
 
+const currentStock =
 
+StockService.calculateCurrentStock(
 
+product
 
-async function loadHistory(){
-
-
-if(!product.id)
-
-return;
-
-
-
-try{
-
-
-const data =
-await StockHistoryService.getProductHistory(
-product.id
 );
-
-
-setHistory(data);
-
-
-}
-
-catch(error){
-
-
-console.error(
-"History loading failed",
-error
-);
-
-
-}
-
-
-}
 
 
 
@@ -154,6 +117,7 @@ error
 
 
 const totalStockIn =
+
 product.stock_entries?.reduce(
 
 (total,item)=>
@@ -167,7 +131,10 @@ total + Number(item.quantity || 0),
 
 
 
+
+
 const totalStockOut =
+
 product.stock_out_entries?.reduce(
 
 (total,item)=>
@@ -181,21 +148,24 @@ total + Number(item.quantity || 0),
 
 
 
-const currentStock =
-totalStockIn - totalStockOut;
-
-
 
 
 const stockValue =
+
 currentStock *
+
 Number(product.purchase_price || 0);
 
 
 
 
+
+
 const lowStock =
+
 currentStock <= Number(product.minimum_stock);
+
+
 
 
 
@@ -226,6 +196,7 @@ zIndex:3000
 >
 
 
+
 <div
 
 style={{
@@ -249,6 +220,7 @@ boxShadow:"0 20px 50px rgba(0,0,0,.25)"
 }}
 
 >
+
 
 
 <h2
@@ -352,9 +324,11 @@ color:"#111827"
 >
 
 
+
 <div>
 <strong>Total Stock In:</strong> {totalStockIn}
 </div>
+
 
 
 <div>
@@ -362,9 +336,11 @@ color:"#111827"
 </div>
 
 
+
 <div>
 <strong>Current Stock:</strong> {currentStock}
 </div>
+
 
 
 <div>
@@ -372,9 +348,11 @@ color:"#111827"
 </div>
 
 
+
 <div>
 
 <strong>Status:</strong>{" "}
+
 
 {
 
@@ -389,6 +367,7 @@ lowStock
 "Healthy"
 
 }
+
 
 </div>
 
@@ -410,80 +389,6 @@ Inventory Movement History
 </h3>
 
 
-
-{
-
-history.length === 0
-
-?
-
-<p style={{color:"#374151"}}>
-No movement history available.
-</p>
-
-
-:
-
-
-history.map(item=>(
-
-
-<div
-
-key={item.id}
-
-style={{
-
-border:"1px solid #e5e7eb",
-
-borderRadius:"10px",
-
-padding:"12px",
-
-marginBottom:"10px",
-
-color:"#111827"
-
-}}
-
->
-
-
-<div>
-<strong>Date:</strong> {item.date}
-</div>
-
-
-<div>
-<strong>Type:</strong> {item.type}
-</div>
-
-
-<div>
-<strong>Quantity:</strong> {item.quantity}
-</div>
-
-
-<div>
-<strong>Invoice:</strong> {item.invoice || "-"}
-</div>
-
-
-
-</div>
-
-
-))
-
-
-}
-
-
-
-
-
-
-
 <hr style={{margin:"20px 0"}} />
 
 
@@ -494,15 +399,22 @@ Inventory Batches
 
 
 
+
+
 {
 
 batches.length === 0
 
+
 ?
 
+
 <p style={{color:"#374151"}}>
+
 No batch records available.
+
 </p>
+
 
 
 :
@@ -557,6 +469,7 @@ color:"#111827"
 </div>
 
 
+
 </div>
 
 
@@ -564,6 +477,8 @@ color:"#111827"
 
 
 }
+
+
 
 
 
@@ -593,6 +508,7 @@ Close
 
 
 </div>
+
 
 
 

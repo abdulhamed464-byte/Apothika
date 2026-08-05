@@ -51,17 +51,31 @@ export interface Product {
 
 export interface InventoryProduct extends Product {
 
+
   stock_entries?: {
 
     quantity:number | null;
 
   }[];
 
+
+
   stock_out_entries?: {
 
     quantity:number | null;
 
   }[];
+
+
+
+  stock_adjustments?: {
+
+    quantity:number | null;
+
+    adjustment_type:"ADD"|"REMOVE";
+
+  }[];
+
 
 }
 
@@ -103,6 +117,7 @@ const {
 
   ),
 
+
   stock_out_entries(
 
     quantity
@@ -113,20 +128,31 @@ const {
 
 
 .eq(
+
   "workspace_id",
+
   workspaceId
+
 )
 
 .eq(
+
   "status",
+
   "Active"
+
 )
 
 .order(
+
   "created_at",
+
   {
+
     ascending:false
+
   }
+
 );
 
 
@@ -143,11 +169,102 @@ if(error){
 
 
 
-return (
+const productIds =
 
-data ?? []
+(data ?? [])
 
-) as InventoryProduct[];
+.map(
+
+product => product.id
+
+)
+
+.filter(Boolean);
+
+
+
+
+
+
+
+const {
+
+  data:adjustments,
+
+  error:adjustmentError
+
+}=await supabase
+
+
+.from("stock_adjustments")
+
+
+.select(`
+
+  product_id,
+
+  quantity,
+
+  adjustment_type
+
+`)
+
+
+.in(
+
+  "product_id",
+
+  productIds
+
+);
+
+
+
+
+
+if(adjustmentError){
+
+  throw adjustmentError;
+
+}
+
+
+
+
+
+
+
+const productsWithAdjustments =
+
+(data ?? [])
+
+.map(product => ({
+
+
+  ...product,
+
+
+  stock_adjustments:
+
+  (adjustments ?? [])
+
+  .filter(
+
+    adjustment =>
+
+    adjustment.product_id === product.id
+
+  )
+
+
+}));
+
+
+
+
+
+
+return productsWithAdjustments as InventoryProduct[];
 
 
 

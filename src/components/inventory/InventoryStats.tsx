@@ -1,40 +1,43 @@
+import { StockService } from "../../services/inventory/StockService";
+
+
 interface Props {
-  products: any[];
+
+  products:any[];
+
 }
 
 
+
 function InventoryStats({
+
   products
-}: Props) {
+
+}:Props) {
+
 
 
   const totalProducts =
+
     products.length;
 
 
 
-  const calculateStock = (product: any) => {
 
 
-    const stockIn =
-      product.stock_entries?.reduce(
-        (total: number, entry: any) =>
-          total + Number(entry.quantity || 0),
-        0
-      ) || 0;
+  const calculateStock = (
+
+    product:any
+
+  ) => {
 
 
+    return StockService.calculateCurrentStock(
 
-    const stockOut =
-      product.stock_out_entries?.reduce(
-        (total: number, entry: any) =>
-          total + Number(entry.quantity || 0),
-        0
-      ) || 0;
+      product
 
+    );
 
-
-    return stockIn - stockOut;
 
   };
 
@@ -43,16 +46,37 @@ function InventoryStats({
 
 
 
+
   const totalStock =
 
-    products.reduce(
-      (sum, product) => {
 
-        return sum + calculateStock(product);
+    products.reduce(
+
+      (
+
+        sum,
+
+        product
+
+      ) => {
+
+
+        return (
+
+          sum +
+
+          calculateStock(product)
+
+        );
+
 
       },
+
       0
+
     );
+
+
 
 
 
@@ -62,11 +86,20 @@ function InventoryStats({
 
   const inventoryValue =
 
+
     products.reduce(
-      (sum, product) => {
+
+      (
+
+        sum,
+
+        product
+
+      ) => {
 
 
         const stock =
+
           calculateStock(product);
 
 
@@ -76,16 +109,27 @@ function InventoryStats({
           sum +
 
           (
+
             stock *
-            Number(product.purchase_price || 0)
+
+            Number(
+
+              product.purchase_price || 0
+
+            )
+
           )
 
         );
 
 
       },
+
       0
+
     );
+
+
 
 
 
@@ -95,11 +139,14 @@ function InventoryStats({
 
   const lowStock =
 
+
     products.filter(
+
       product => {
 
 
         const stock =
+
           calculateStock(product);
 
 
@@ -107,7 +154,12 @@ function InventoryStats({
         return (
 
           stock <=
-          Number(product.minimum_stock || 0)
+
+          Number(
+
+            product.minimum_stock || 0
+
+          )
 
         );
 
@@ -122,9 +174,13 @@ function InventoryStats({
 
 
 
+
+
   return (
 
+
     <div className="inventory-stats">
+
 
 
       <div className="inventory-stat-card">
@@ -133,11 +189,18 @@ function InventoryStats({
           Total Products
         </span>
 
+
         <strong>
+
           {totalProducts}
+
         </strong>
 
+
       </div>
+
+
+
 
 
 
@@ -148,11 +211,17 @@ function InventoryStats({
           Stock Quantity
         </span>
 
+
         <strong>
+
           {totalStock}
+
         </strong>
 
+
       </div>
+
+
 
 
 
@@ -164,11 +233,17 @@ function InventoryStats({
           Inventory Value
         </span>
 
+
         <strong>
+
           ₹{inventoryValue.toLocaleString()}
+
         </strong>
 
+
       </div>
+
+
 
 
 
@@ -180,17 +255,24 @@ function InventoryStats({
           Low Stock
         </span>
 
+
         <strong>
+
           {lowStock}
+
         </strong>
+
 
       </div>
 
 
 
+
     </div>
 
+
   );
+
 
 }
 

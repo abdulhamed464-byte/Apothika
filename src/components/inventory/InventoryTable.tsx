@@ -1,4 +1,5 @@
 import type { InventoryProduct } from "../../services/inventory/ProductService";
+import { StockService } from "../../services/inventory/StockService";
 
 
 interface Props {
@@ -94,26 +95,19 @@ Actions
 products.map((product)=>{
 
 
-const stockIn =
-  product.stock_entries?.reduce(
-    (total, item) => total + Number(item.quantity || 0),
-    0
-  ) || 0;
+const stock =
 
-const stockOut =
-  product.stock_out_entries?.reduce(
-    (total, item) => total + Number(item.quantity || 0),
-    0
-  ) || 0;
+  StockService.calculateCurrentStock(
 
-const stock = stockIn - stockOut;
+    product
 
-const value =
+  );
+  
+  const value =
 
 stock *
 
 Number(product.purchase_price || 0);
-
 
 const lowStock =
 

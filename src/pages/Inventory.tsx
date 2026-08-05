@@ -17,7 +17,20 @@ import InventorySidePanel from "../components/inventory/InventorySidePanel";
 import SearchFilterBar from "../components/shared/SearchFilterBar";
 import InventoryScannerButton from "../components/inventory/InventoryScannerButton";
 import ProductDetailsModal from "../components/inventory/ProductDetailsModal";
+import InventoryTransactionHistory from "../components/inventory/InventoryTransactionHistory";
+
+
+import { StockHistoryService }
+from "../services/inventory/StockHistoryService";
+
+import type {
+  InventoryTransaction
+}
+from "../services/inventory/StockHistoryService";
+
+
 import "../styles/inventory.css";
+
 
 
 const WORKSPACE_ID =
@@ -25,26 +38,39 @@ const WORKSPACE_ID =
 
 
 
+
 function Inventory(){
+
+
 
 const [products,setProducts] =
 useState<InventoryProduct[]>([]);
+
+
+
+const [transactions,setTransactions] =
+useState<InventoryTransaction[]>([]);
+
 
 
 const [loading,setLoading] =
 useState(true);
 
 
+
 const [saving,setSaving] =
 useState(false);
+
 
 
 const [message,setMessage] =
 useState("");
 
 
+
 const [editingProduct,setEditingProduct] =
 useState<Product|null>(null);
+
 
 
 const [selectedProduct,setSelectedProduct] =
@@ -52,20 +78,31 @@ useState<InventoryProduct|null>(null);
 
 
 
+
 const [search,setSearch] =
 useState("");
+
+
 
 const [category,setCategory] =
 useState("");
 
+
+
 const [brand,setBrand] =
 useState("");
+
+
 
 const [stockStatus,setStockStatus] =
 useState("");
 
+
+
 const [status,setStatus] =
 useState("Active");
+
+
 
 
 
@@ -99,7 +136,11 @@ useEffect(()=>{
 
 loadProducts();
 
+loadTransactions();
+
 },[]);
+
+
 
 
 
@@ -109,31 +150,77 @@ async function loadProducts(){
 
 try{
 
+
 const data =
 await ProductService.getProducts(
 WORKSPACE_ID
 );
 
 
+
 setProducts(data);
+
 
 
 }
 
 catch(error){
 
+
 console.error(
 "Inventory loading error",
 error
 );
 
+
 }
 
 finally{
 
+
 setLoading(false);
 
+
 }
+
+}
+
+
+
+
+
+
+
+async function loadTransactions(){
+
+
+try{
+
+
+const data =
+await StockHistoryService.getAllTransactions(
+WORKSPACE_ID
+);
+
+
+
+setTransactions(data);
+
+
+
+}
+
+catch(error){
+
+
+console.error(
+"Transaction loading error",
+error
+);
+
+
+}
+
 
 }
 
@@ -162,7 +249,10 @@ p=>p.category
 
 ] as string[];
 
+
 },[products]);
+
+
 
 
 
@@ -187,8 +277,8 @@ p=>p.brand
 
 ] as string[];
 
-},[products]);
 
+},[products]);
 
 
 
@@ -203,8 +293,11 @@ useMemo(()=>{
 return products.filter(product=>{
 
 
+
 const text =
 search.toLowerCase();
+
+
 
 
 const matchesSearch =
@@ -243,6 +336,7 @@ total + Number(item.quantity || 0),
 
 
 
+
 const stockOut =
 product.stock_out_entries?.reduce(
 
@@ -256,14 +350,76 @@ total + Number(item.quantity || 0),
 
 
 
+
+const adjustmentAdd =
+product.stock_adjustments
+?.filter(
+
+item =>
+
+item.adjustment_type === "ADD"
+
+)
+.reduce(
+
+(total,item)=>
+
+total + Number(item.quantity || 0),
+
+0
+
+) || 0;
+
+
+
+
+const adjustmentRemove =
+product.stock_adjustments
+?.filter(
+
+item =>
+
+item.adjustment_type === "REMOVE"
+
+)
+.reduce(
+
+(total,item)=>
+
+total + Number(item.quantity || 0),
+
+0
+
+) || 0;
+
+
+
+
 const stock =
-stockIn - stockOut;
+
+stockIn
+
+-
+
+stockOut
+
++
+
+adjustmentAdd
+
+-
+
+adjustmentRemove;
+
+
 
 
 
 return (
 
-matchesSearch &&
+matchesSearch
+
+&&
 
 (!category || product.category===category)
 
@@ -293,7 +449,9 @@ stock <= Number(product.minimum_stock))
 
 (!status || product.status===status)
 
+
 );
+
 
 
 });
@@ -314,14 +472,6 @@ stockStatus,
 status
 
 ]);
-
-
-
-
-
-
-
-
 
 function handleProductChange(
 
@@ -373,15 +523,15 @@ value
 
 
 
-
-
 function prepareEdit(
 
 product:InventoryProduct
 
 ){
 
+
 setEditingProduct(product);
+
 
 setProductForm({
 
@@ -389,9 +539,8 @@ setProductForm({
 
 });
 
+
 }
-
-
 
 
 
@@ -408,9 +557,12 @@ e:React.FormEvent
 e.preventDefault();
 
 
+
 try{
 
+
 setSaving(true);
+
 
 
 
@@ -433,7 +585,10 @@ tax_rate:Number(productForm.tax_rate)
 
 
 
+
 if(editingProduct?.id){
+
+
 
 await ProductService.updateProduct(
 
@@ -444,13 +599,17 @@ payload
 );
 
 
+
 setMessage(
 "Product updated"
 );
 
 
+
 }
+
 else{
+
 
 
 await ProductService.createProduct(
@@ -460,42 +619,56 @@ payload
 );
 
 
+
 setMessage(
 "Product created"
 );
 
 
+
 }
+
 
 
 
 setEditingProduct(null);
 
 
+
 await loadProducts();
+
 
 
 }
 
+
 catch(error){
 
+
+
 console.error(error);
+
+
 
 setMessage(
 "Operation failed"
 );
 
+
+
 }
+
 
 finally{
 
+
 setSaving(false);
 
-}
 
 }
 
 
+}
 
 
 
@@ -512,14 +685,20 @@ product:InventoryProduct
 
 
 const confirmArchive =
+
 window.confirm(
+
 `Archive ${product.product_name}?`
+
 );
+
 
 
 if(!confirmArchive)
 
 return;
+
+
 
 
 
@@ -531,11 +710,12 @@ product.id!
 
 
 
+
 await loadProducts();
 
 
-}
 
+}
 
 
 
@@ -551,7 +731,9 @@ return (
 
 <div className="inventory-header">
 
+
 <div>
+
 
 <h1>
 Inventory
@@ -565,7 +747,11 @@ Manage products, stock and inventory intelligence.
 
 </div>
 
+
 </div>
+
+
+
 
 
 <InventoryStats
@@ -573,6 +759,7 @@ Manage products, stock and inventory intelligence.
 products={products}
 
 />
+
 
 
 
@@ -604,6 +791,7 @@ editingProduct
 
 
 
+
 <ProductForm
 
 form={productForm}
@@ -627,6 +815,7 @@ setEditingProduct(null);
 />
 
 
+
 </div>
 
 
@@ -636,7 +825,10 @@ setEditingProduct(null);
 
 
 
+
 <div className="inventory-main-card">
+
+
 
 
 
@@ -673,6 +865,7 @@ brands={brands}
 
 
 
+
 <InventoryScannerButton
 
 workspaceId={WORKSPACE_ID}
@@ -680,6 +873,7 @@ workspaceId={WORKSPACE_ID}
 onProductFound={setSelectedProduct}
 
 />
+
 
 
 
@@ -714,8 +908,9 @@ onView={setSelectedProduct}
 
 
 
-
 </div>
+
+
 
 
 
@@ -733,9 +928,31 @@ products={products}
 
 
 
+
+
+<InventoryTransactionHistory
+
+transactions={transactions}
+
+/>
+
+
+
+
+
+
+
+
 <InventorySidePanel />
+
+
+
+
+
 {
+
 selectedProduct && (
+
 
 <ProductDetailsModal
 
@@ -745,15 +962,23 @@ onClose={()=>setSelectedProduct(null)}
 
 />
 
+
 )
+
 }
+
+
 
 
 
 </div>
 
+
 );
 
+
 }
+
+
 
 export default Inventory;

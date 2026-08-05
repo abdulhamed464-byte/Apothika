@@ -58,10 +58,15 @@ WORKSPACE_ID
 );
 
 
+console.log(
+"PRODUCT DATA:",
+data
+);
+
+
 setProducts(data);
 
 }
-
 
 
 

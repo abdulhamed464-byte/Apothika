@@ -272,7 +272,7 @@ async stockIn(
 
 async getAllStockEntries(
 
-businessId:string
+  businessId:string
 
 ):Promise<StockEntry[]> {
 
@@ -335,8 +335,209 @@ data ??
 
 
 
-}
+},
 
+
+
+
+
+
+calculateCurrentStock(
+
+  product:any
+
+):number {
+
+
+  const stockIn =
+
+    product.stock_entries?.reduce(
+
+      (
+
+        total:number,
+
+        item:any
+
+      ) =>
+
+        total + Number(item.quantity || 0),
+
+      0
+
+    ) || 0;
+
+
+
+  const stockOut =
+
+    product.stock_out_entries?.reduce(
+
+      (
+
+        total:number,
+
+        item:any
+
+      ) =>
+
+        total + Number(item.quantity || 0),
+
+      0
+
+    ) || 0;
+
+
+
+  const adjustmentAdd =
+
+    product.stock_adjustments
+
+    ?.filter(
+
+      (item:any)=>
+
+        item.adjustment_type === "ADD"
+
+    )
+
+    .reduce(
+
+      (
+
+        total:number,
+
+        item:any
+
+      ) =>
+
+        total + Number(item.quantity || 0),
+
+      0
+
+    ) || 0;
+
+
+
+
+  const adjustmentRemove =
+
+    product.stock_adjustments
+
+    ?.filter(
+
+      (item:any)=>
+
+        item.adjustment_type === "REMOVE"
+
+    )
+
+    .reduce(
+
+      (
+
+        total:number,
+
+        item:any
+
+      ) =>
+
+        total + Number(item.quantity || 0),
+
+      0
+
+    ) || 0;
+
+
+
+  return (
+
+    stockIn
+
+    - stockOut
+
+    + adjustmentAdd
+
+    - adjustmentRemove
+
+  );
+
+
+},
+
+
+
+
+
+
+calculateInventoryValue(
+
+  product:any
+
+):number {
+
+
+  const stock =
+
+    StockService.calculateCurrentStock(
+
+      product
+
+    );
+
+
+
+  return (
+
+    stock *
+
+    Number(
+
+      product.purchase_price || 0
+
+    )
+
+  );
+
+
+},
+
+
+
+
+
+
+isLowStock(
+
+  product:any
+
+):boolean {
+
+
+  const stock =
+
+    StockService.calculateCurrentStock(
+
+      product
+
+    );
+
+
+
+  return (
+
+    stock <=
+
+    Number(
+
+      product.minimum_stock || 0
+
+    )
+
+  );
+
+
+}
 
 
 };
