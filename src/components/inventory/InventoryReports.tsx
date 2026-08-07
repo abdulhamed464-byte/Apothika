@@ -1,3 +1,7 @@
+import { StockService } from "../../services/inventory/StockService";
+import { BatchService } from "../../services/inventory/BatchService";
+
+
 interface Props {
 
   products:any[];
@@ -8,293 +12,282 @@ interface Props {
 
 function InventoryReports({
 
-products
+  products
 
 }:Props){
 
 
 
-const categories =
+  const categories =
 
-new Set(
+    new Set(
 
-products.map(
+      products.map(
 
-product=>product.category
+        (product:any)=>
 
-).filter(Boolean)
+          product.category
 
-)
+      )
 
-.size;
+      .filter(Boolean)
 
+    )
 
+    .size;
 
 
 
 
 
-const totalStock =
+  const totalStock =
 
-products.reduce(
+    products.reduce(
 
-(sum,product)=>{
+      (sum:number, product:any)=>
 
+        sum +
 
-const stockIn =
+        StockService.calculateCurrentStock(product),
 
-product.stock_entries?.reduce(
+      0
 
-(total:any,item:any)=>
+    );
 
-total + Number(item.quantity || 0),
 
-0
 
-) || 0;
 
 
 
 
-const stockOut =
+  const lowStock =
 
-product.stock_out_entries?.reduce(
+    products.filter(
 
-(total:any,item:any)=>
+      (product:any)=>
 
-total + Number(item.quantity || 0),
+        StockService.isLowStock(product)
 
-0
+    )
 
-) || 0;
+    .length;
 
 
 
 
-const adjustmentAdd =
 
-product.stock_adjustments
 
-?.filter(
 
-(item:any)=>
+  const inventoryValue =
 
-item.adjustment_type==="ADD"
+    products.reduce(
 
-)
+      (sum:number, product:any)=>
 
-.reduce(
+        sum +
 
-(total:any,item:any)=>
+        StockService.calculateInventoryValue(product),
 
-total + Number(item.quantity || 0),
+      0
 
-0
+    );
 
-) || 0;
 
 
 
 
 
-const adjustmentRemove =
 
-product.stock_adjustments
+  const batchProducts =
 
-?.filter(
+    products.filter(
 
-(item:any)=>
+      (product:any)=>
 
-item.adjustment_type==="REMOVE"
+        product.batch_required
 
-)
+    )
 
-.reduce(
+    .length;
 
-(total:any,item:any)=>
 
-total + Number(item.quantity || 0),
 
-0
 
-) || 0;
 
 
 
 
 
-return (
+  const expiredBatches =
 
-sum +
+    products.reduce(
 
-stockIn
+      (count:number, product:any)=>{
 
--
 
-stockOut
+        const batches =
 
-+
+          product.inventory_batches || [];
 
-adjustmentAdd
 
--
 
-adjustmentRemove
+        return (
 
-);
+          count +
 
+          batches.filter(
 
-},
+            (batch:any)=>
 
-0
+              BatchService.isExpired(batch)
 
-);
+          )
 
+          .length
 
+        );
 
 
+      },
 
+      0
 
+    );
 
 
 
-const lowStock =
 
-products.filter(product=>{
 
 
-const stockIn =
 
-product.stock_entries?.reduce(
 
-(total:any,item:any)=>
 
-total + Number(item.quantity || 0),
+  const expiringSoonBatches =
 
-0
+    products.reduce(
 
-) || 0;
+      (count:number, product:any)=>{
 
 
+        const batches =
 
-const stockOut =
+          product.inventory_batches || [];
 
-product.stock_out_entries?.reduce(
 
-(total:any,item:any)=>
 
-total + Number(item.quantity || 0),
+        return (
 
-0
+          count +
 
-) || 0;
+          batches.filter(
 
+            (batch:any)=>
 
+              BatchService.isExpiringSoon(batch)
 
-const stock =
+          )
 
-stockIn-stockOut;
+          .length
 
+        );
 
 
-return (
+      },
 
-stock <= Number(product.minimum_stock)
+      0
 
-);
+    );
 
 
-})
 
-.length;
 
 
 
 
 
 
+  return(
 
 
-const inventoryValue =
+    <div className="inventory-reports">
 
-products.reduce(
 
-(sum,product)=>{
 
+      <h2>
 
-const stockIn =
+        Inventory Reports
 
-product.stock_entries?.reduce(
+      </h2>
 
-(total:any,item:any)=>
 
-total + Number(item.quantity || 0),
 
-0
+      <p>
 
-) || 0;
+        Stock intelligence overview
 
+      </p>
 
 
-const stockOut =
 
-product.stock_out_entries?.reduce(
 
-(total:any,item:any)=>
 
-total + Number(item.quantity || 0),
 
-0
 
-) || 0;
 
 
+      <div className="inventory-report-grid">
 
-const stock =
 
-stockIn-stockOut;
 
 
 
-return (
+        <div className="inventory-report-card">
 
-sum +
+          <span>
+            Total Products
+          </span>
 
-(
+          <strong>
+            {products.length}
+          </strong>
 
-stock *
+        </div>
 
-Number(product.purchase_price || 0)
 
-)
 
-);
 
 
-},
 
-0
 
-);
+        <div className="inventory-report-card">
 
+          <span>
+            Categories
+          </span>
 
+          <strong>
+            {categories}
+          </strong>
 
+        </div>
 
 
 
 
-const batchProducts =
 
-products.filter(
 
-product=>
 
-product.batch_required
+        <div className="inventory-report-card">
 
-)
+          <span>
+            Total Stock
+          </span>
 
-.length;
+          <strong>
+            {totalStock}
+          </strong>
 
+        </div>
 
 
 
@@ -302,158 +295,116 @@ product.batch_required
 
 
 
-return(
+        <div className="inventory-report-card">
 
+          <span>
+            Low Stock Items
+          </span>
 
-<div className="inventory-reports">
+          <strong>
+            {lowStock}
+          </strong>
 
+        </div>
 
 
-<h2>
 
-Inventory Reports
 
-</h2>
 
 
 
-<p>
+        <div className="inventory-report-card">
 
-Stock intelligence overview
+          <span>
+            Inventory Value
+          </span>
 
-</p>
+          <strong>
 
+            ₹{inventoryValue.toLocaleString()}
 
+          </strong>
 
+        </div>
 
 
 
-<div className="inventory-report-grid">
 
 
 
 
+        <div className="inventory-report-card">
 
-<div className="inventory-report-card">
+          <span>
+            Batch Tracking
+          </span>
 
-<span>
-Total Products
-</span>
+          <strong>
 
-<strong>
-{products.length}
-</strong>
+            {batchProducts}
 
-</div>
+          </strong>
 
+        </div>
 
 
 
 
 
-<div className="inventory-report-card">
 
-<span>
-Categories
-</span>
 
-<strong>
-{categories}
-</strong>
+        <div className="inventory-report-card">
 
-</div>
+          <span>
+            Expired Batches
+          </span>
 
+          <strong>
 
+            {expiredBatches}
 
+          </strong>
 
+        </div>
 
 
 
-<div className="inventory-report-card">
 
-<span>
-Total Stock
-</span>
 
-<strong>
-{totalStock}
-</strong>
 
-</div>
 
+        <div className="inventory-report-card">
 
+          <span>
+            Expiring Soon
+          </span>
 
+          <strong>
 
+            {expiringSoonBatches}
 
+          </strong>
 
+        </div>
 
-<div className="inventory-report-card">
 
-<span>
-Low Stock Items
-</span>
 
-<strong>
-{lowStock}
-</strong>
 
-</div>
 
 
 
+      </div>
 
 
 
 
-<div className="inventory-report-card">
 
-<span>
-Inventory Value
-</span>
 
-<strong>
 
-₹{inventoryValue.toLocaleString()}
+    </div>
 
-</strong>
 
-</div>
-
-
-
-
-
-
-
-<div className="inventory-report-card">
-
-<span>
-Batch Tracking
-</span>
-
-<strong>
-
-{batchProducts}
-
-</strong>
-
-</div>
-
-
-
-
-
-
-</div>
-
-
-
-
-
-</div>
-
-
-);
+  );
 
 
 }

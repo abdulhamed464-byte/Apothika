@@ -10,28 +10,39 @@ import { supabase } from "../lib/supabase";
 import type { StockInPayload } from "../types/stock";
 
 
+
+const WORKSPACE_ID =
+"4e24cab5-087c-4004-8d80-1098dbbe3ade";
+
+
 const BUSINESS_ID =
-"ba4ce0ce-2380-4657-bd77-324bed8afa1d";
+"4e24cab5-087c-4004-8d80-1098dbbe3ade";
+
 
 
 
 function StockIn(){
 
 
+
 const [products,setProducts] =
 useState<any[]>([]);
+
 
 
 const [suppliers,setSuppliers] =
 useState<any[]>([]);
 
 
+
 const [loading,setLoading] =
 useState(false);
 
 
+
 const [message,setMessage] =
 useState("");
+
 
 
 
@@ -48,16 +59,19 @@ loadData();
 
 
 
+
 async function loadData(){
 
 
 try{
 
 
+
 const productData =
 await ProductService.getProducts(
-BUSINESS_ID
+WORKSPACE_ID
 );
+
 
 
 setProducts(productData);
@@ -66,26 +80,45 @@ setProducts(productData);
 
 
 
+
+
 const {
+
 data,
+
 error
+
 }
+
 =
+
 await supabase
+
 
 .from("suppliers")
 
+
 .select("*")
 
-.eq(
-"business_id",
-BUSINESS_ID
-)
 
 .eq(
+
+"business_id",
+
+BUSINESS_ID
+
+)
+
+
+.eq(
+
 "status",
+
 "Active"
+
 );
+
+
 
 
 
@@ -97,9 +130,14 @@ throw error;
 
 
 
+
+
 setSuppliers(
+
 data ?? []
+
 );
+
 
 
 
@@ -107,16 +145,22 @@ data ?? []
 
 catch(error){
 
+
 console.error(
+
 "Stock In loading error",
+
 error
+
 );
 
-}
-
-
 
 }
+
+
+
+}
+
 
 
 
@@ -132,7 +176,9 @@ payload:StockInPayload
 ){
 
 
+
 try{
+
 
 
 setLoading(true);
@@ -143,14 +189,20 @@ setMessage("");
 
 
 
+
+
 await StockService.stockIn({
 
 ...payload,
 
+
 business_id:
+
 BUSINESS_ID
 
+
 });
+
 
 
 
@@ -164,13 +216,15 @@ setMessage(
 
 
 
-}
 
+}
 
 catch(error){
 
 
+
 console.error(error);
+
 
 
 setMessage(
@@ -183,11 +237,12 @@ setMessage(
 
 }
 
-
 finally{
 
 
+
 setLoading(false);
+
 
 
 }
@@ -206,13 +261,16 @@ setLoading(false);
 
 return (
 
+
 <div className="inventory-container">
+
 
 
 <div className="inventory-header">
 
 
 <div>
+
 
 <h1>
 
@@ -239,20 +297,34 @@ Add incoming stock into inventory.
 
 
 
+
+
 <div className="inventory-main-card">
+
+
+
 
 
 <StockInForm
 
+
 products={products}
+
 
 suppliers={suppliers}
 
+
 onSubmit={handleStockIn}
+
 
 loading={loading}
 
+
 />
+
+
+
+
 
 
 
@@ -260,27 +332,36 @@ loading={loading}
 
 message &&
 
+
 <p className="product-message">
+
 
 {message}
 
+
 </p>
+
 
 }
 
 
 
-</div>
-
-
 
 
 </div>
+
+
+
+
+
+</div>
+
 
 );
 
 
 }
+
 
 
 export default StockIn;

@@ -173,6 +173,8 @@ function SearchFilterBar({
 
 
 
+
+
       <select
 
         value={brand}
@@ -234,6 +236,7 @@ function SearchFilterBar({
 
 
 
+
       <select
 
         value={stockStatus}
@@ -279,7 +282,16 @@ function SearchFilterBar({
         </option>
 
 
+        <option value="out">
+
+          Out of Stock
+
+        </option>
+
+
       </select>
+
+
 
 
 

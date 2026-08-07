@@ -139,41 +139,23 @@ function InventoryStats({
 
   const lowStock =
 
+  products.filter(
 
-    products.filter(
+    product =>
 
-      product => {
+      StockService.isLowStock(product)
 
+  ).length;
 
-        const stock =
+  const outOfStock =
 
-          calculateStock(product);
+  products.filter(
 
+    product =>
 
+      StockService.isOutOfStock(product)
 
-        return (
-
-          stock <=
-
-          Number(
-
-            product.minimum_stock || 0
-
-          )
-
-        );
-
-
-      }
-
-    ).length;
-
-
-
-
-
-
-
+  ).length;
 
 
   return (
@@ -265,7 +247,17 @@ function InventoryStats({
 
       </div>
 
+<div className="inventory-stat-card">
 
+  <span>
+    Out of Stock
+  </span>
+
+  <strong>
+    {outOfStock}
+  </strong>
+
+</div>
 
 
     </div>

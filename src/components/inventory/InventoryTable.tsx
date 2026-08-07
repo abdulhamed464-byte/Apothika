@@ -109,10 +109,8 @@ stock *
 
 Number(product.purchase_price || 0);
 
-const lowStock =
-
-stock <= Number(product.minimum_stock);
-
+const stockStatus =
+  StockService.getStockStatus(product);
 
 
 return (
@@ -208,7 +206,15 @@ borderRadius:"8px"
 
 className={
 
-lowStock
+stockStatus === "OUT_OF_STOCK"
+
+?
+
+"inventory-out"
+
+:
+
+stockStatus === "LOW_STOCK"
 
 ?
 
@@ -224,7 +230,15 @@ lowStock
 
 {
 
-lowStock
+stockStatus === "OUT_OF_STOCK"
+
+?
+
+"Out of Stock"
+
+:
+
+stockStatus === "LOW_STOCK"
 
 ?
 

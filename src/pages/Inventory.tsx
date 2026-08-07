@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 
 
 import { ProductService } from "../services/inventory/ProductService";
+import { StockService } from "../services/inventory/StockService";
 
 import type {
   Product,
@@ -18,7 +19,7 @@ import SearchFilterBar from "../components/shared/SearchFilterBar";
 import InventoryScannerButton from "../components/inventory/InventoryScannerButton";
 import ProductDetailsModal from "../components/inventory/ProductDetailsModal";
 import InventoryTransactionHistory from "../components/inventory/InventoryTransactionHistory";
-
+import InventoryIntelligence from "../components/inventory/InventoryIntelligence";
 
 import { StockHistoryService }
 from "../services/inventory/StockHistoryService";
@@ -323,94 +324,9 @@ product.sku
 
 
 
-const stockIn =
-product.stock_entries?.reduce(
+const stockStatusValue =
 
-(total,item)=>
-
-total + Number(item.quantity || 0),
-
-0
-
-) || 0;
-
-
-
-
-const stockOut =
-product.stock_out_entries?.reduce(
-
-(total,item)=>
-
-total + Number(item.quantity || 0),
-
-0
-
-) || 0;
-
-
-
-
-const adjustmentAdd =
-product.stock_adjustments
-?.filter(
-
-item =>
-
-item.adjustment_type === "ADD"
-
-)
-.reduce(
-
-(total,item)=>
-
-total + Number(item.quantity || 0),
-
-0
-
-) || 0;
-
-
-
-
-const adjustmentRemove =
-product.stock_adjustments
-?.filter(
-
-item =>
-
-item.adjustment_type === "REMOVE"
-
-)
-.reduce(
-
-(total,item)=>
-
-total + Number(item.quantity || 0),
-
-0
-
-) || 0;
-
-
-
-
-const stock =
-
-stockIn
-
--
-
-stockOut
-
-+
-
-adjustmentAdd
-
--
-
-adjustmentRemove;
-
+StockService.getStockStatus(product);
 
 
 
@@ -436,13 +352,17 @@ stockStatus===""
 ||
 
 (stockStatus==="healthy" &&
-stock > Number(product.minimum_stock))
+stockStatusValue==="IN_STOCK")
 
 ||
 
 (stockStatus==="low" &&
-stock <= Number(product.minimum_stock))
+stockStatusValue==="LOW_STOCK")
 
+||
+
+(stockStatus==="out" &&
+stockStatusValue==="OUT_OF_STOCK")
 )
 
 &&
@@ -760,7 +680,11 @@ products={products}
 
 />
 
+<InventoryIntelligence
 
+products={products}
+
+/>
 
 
 

@@ -10,11 +10,70 @@ export const BatchService = {
 
 
 
+  async getOrganizationId(
+  workspaceId:string
+):Promise<string>{
+
+
+  const {
+
+    data,
+
+    error
+
+  } = await supabase
+
+    .from("organizations")
+
+    .select("id")
+
+    .eq(
+      "workspace_id",
+      workspaceId
+    );
+
+
+  if(error){
+
+    throw error;
+
+  }
+
+
+  if(!data || data.length === 0){
+
+    throw new Error(
+      "No organization found for workspace: " + workspaceId
+    );
+
+  }
+
+
+  return data[0].id;
+
+
+},
+
+
+
+
   async createBatch(
 
     payload: BatchCreatePayload
 
   ): Promise<InventoryBatch> {
+
+
+
+    const organizationId =
+
+      await this.getOrganizationId(
+
+        payload.business_id
+
+      );
+
+
 
 
     const {
@@ -33,38 +92,47 @@ export const BatchService = {
 
 
         business_id:
-          payload.business_id,
+
+          organizationId,
 
 
         product_id:
+
           payload.product_id,
 
 
         stock_entry_id:
+
           payload.stock_entry_id ?? null,
 
 
         batch_number:
+
           payload.batch_number,
 
 
         manufacturing_date:
+
           payload.manufacturing_date ?? null,
 
 
         expiry_date:
+
           payload.expiry_date ?? null,
 
 
         quantity_received:
+
           payload.quantity_received,
 
 
         quantity_available:
+
           payload.quantity_received,
 
 
         purchase_price:
+
           payload.purchase_price
 
 
@@ -115,6 +183,7 @@ export const BatchService = {
       error
 
     } = await supabase
+
 
 
       .from("inventory_batches")
@@ -191,6 +260,7 @@ export const BatchService = {
     } = await supabase
 
 
+
       .from("inventory_batches")
 
 
@@ -251,6 +321,7 @@ export const BatchService = {
     } = await supabase
 
 
+
       .from("inventory_batches")
 
 
@@ -260,7 +331,6 @@ export const BatchService = {
         quantity_available:
 
           quantity
-
 
 
       })
@@ -321,6 +391,7 @@ export const BatchService = {
     } = await supabase
 
 
+
       .from("inventory_batches")
 
 
@@ -368,6 +439,7 @@ export const BatchService = {
 
       )
 
+
       .order(
 
         "created_at",
@@ -400,8 +472,104 @@ export const BatchService = {
     ) as InventoryBatch[];
 
 
-  }
+  },
 
+
+
+
+
+
+
+  isExpired(
+
+    batch:InventoryBatch
+
+  ):boolean{
+
+
+    if(!batch.expiry_date){
+
+      return false;
+
+    }
+
+
+    return (
+
+      new Date(batch.expiry_date)
+
+      <
+
+      new Date()
+
+    );
+
+
+  },
+
+
+
+
+
+
+
+  isExpiringSoon(
+
+    batch:InventoryBatch,
+
+    days:number = 30
+
+  ):boolean{
+
+
+    if(!batch.expiry_date){
+
+      return false;
+
+    }
+
+
+
+    const difference =
+
+      new Date(batch.expiry_date).getTime()
+
+      -
+
+      new Date().getTime();
+
+
+
+    const daysRemaining =
+
+      difference /
+
+      (
+
+        1000 *
+
+        60 *
+
+        60 *
+
+        24
+
+      );
+
+
+
+    return (
+
+      daysRemaining > 0
+
+      &&
+
+      daysRemaining <= days
+
+    );
+
+
+  }
 
 
 };

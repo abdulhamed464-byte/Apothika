@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import type { InventoryProduct } 
+import type { InventoryProduct }
 from "../../services/inventory/ProductService";
 
 import { StockService }
@@ -14,8 +14,11 @@ from "../../services/inventory/BatchService";
 
 
 interface Props {
+
   product: InventoryProduct;
+
   onClose: () => void;
+
 }
 
 
@@ -30,17 +33,11 @@ function ProductDetailsModal({
 
 
 
-console.log(
-  "VIEW PRODUCT:",
-  product
-);
-
-
-
-
 const [batches,setBatches] =
 
 useState<InventoryBatch[]>([]);
+
+
 
 
 useEffect(()=>{
@@ -103,6 +100,9 @@ error
 
 
 
+
+
+
 const currentStock =
 
 StockService.calculateCurrentStock(
@@ -110,7 +110,6 @@ StockService.calculateCurrentStock(
 product
 
 );
-
 
 
 
@@ -132,7 +131,6 @@ total + Number(item.quantity || 0),
 
 
 
-
 const totalStockOut =
 
 product.stock_out_entries?.reduce(
@@ -149,21 +147,26 @@ total + Number(item.quantity || 0),
 
 
 
-
 const stockValue =
 
-currentStock *
+StockService.calculateInventoryValue(
 
-Number(product.purchase_price || 0);
+product
 
-
-
-
+);
 
 
-const lowStock =
 
-currentStock <= Number(product.minimum_stock);
+
+
+const stockStatus =
+
+StockService.getStockStatus(
+
+product
+
+);
+
 
 
 
@@ -172,6 +175,7 @@ currentStock <= Number(product.minimum_stock);
 
 
 return (
+
 
 <div
 
@@ -243,6 +247,7 @@ Product Details
 
 
 
+
 <div
 
 style={{
@@ -259,41 +264,57 @@ color:"#111827"
 
 
 <div>
+
 <strong>Name:</strong> {product.product_name}
+
 </div>
 
 
 <div>
+
 <strong>SKU:</strong> {product.sku}
+
 </div>
 
 
 <div>
+
 <strong>Barcode:</strong> {product.barcode || "-"}
+
 </div>
 
 
 <div>
+
 <strong>Category:</strong> {product.category || "-"}
+
 </div>
 
 
 <div>
+
 <strong>Brand:</strong> {product.brand || "-"}
+
 </div>
 
 
 <div>
+
 <strong>Selling Price:</strong> ₹{product.selling_price}
+
 </div>
 
 
 <div>
+
 <strong>Status:</strong> {product.status}
+
 </div>
 
 
 </div>
+
+
 
 
 
@@ -303,9 +324,15 @@ color:"#111827"
 
 
 
+
+
 <h3 style={{color:"#111827"}}>
+
 Inventory Summary
+
 </h3>
+
+
 
 
 
@@ -326,26 +353,35 @@ color:"#111827"
 
 
 <div>
+
 <strong>Total Stock In:</strong> {totalStockIn}
+
 </div>
 
 
 
 <div>
+
 <strong>Total Stock Out:</strong> {totalStockOut}
+
 </div>
 
 
 
 <div>
+
 <strong>Current Stock:</strong> {currentStock}
+
 </div>
 
 
 
 <div>
+
 <strong>Inventory Value:</strong> ₹{stockValue}
+
 </div>
+
 
 
 
@@ -356,7 +392,15 @@ color:"#111827"
 
 {
 
-lowStock
+stockStatus === "OUT_OF_STOCK"
+
+?
+
+"Out of Stock"
+
+:
+
+stockStatus === "LOW_STOCK"
 
 ?
 
@@ -380,22 +424,20 @@ lowStock
 
 
 
-<hr style={{margin:"20px 0"}} />
-
-
-
-<h3 style={{color:"#111827"}}>
-Inventory Movement History
-</h3>
-
 
 <hr style={{margin:"20px 0"}} />
 
 
 
+
+
 <h3 style={{color:"#111827"}}>
+
 Inventory Batches
+
 </h3>
+
+
 
 
 
@@ -404,6 +446,7 @@ Inventory Batches
 {
 
 batches.length === 0
+
 
 
 ?
@@ -420,7 +463,9 @@ No batch records available.
 :
 
 
+
 batches.map(batch=>(
+
 
 
 <div
@@ -444,40 +489,55 @@ color:"#111827"
 >
 
 
+
 <div>
+
 <strong>Batch:</strong> {batch.batch_number}
+
 </div>
 
 
+
 <div>
+
 <strong>Quantity Received:</strong> {batch.quantity_received}
+
 </div>
 
 
+
 <div>
+
 <strong>Quantity Available:</strong> {batch.quantity_available}
+
 </div>
 
 
+
 <div>
+
 <strong>Expiry:</strong> {batch.expiry_date || "-"}
+
 </div>
+
 
 
 <div>
+
 <strong>Status:</strong> {batch.status}
-</div>
-
-
 
 </div>
+
+
+
+</div>
+
 
 
 ))
 
 
 }
-
 
 
 
@@ -500,6 +560,7 @@ marginTop:"24px"
 >
 
 
+
 <button onClick={onClose}>
 
 Close
@@ -507,7 +568,9 @@ Close
 </button>
 
 
+
 </div>
+
 
 
 

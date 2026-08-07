@@ -77,6 +77,26 @@ export interface InventoryProduct extends Product {
   }[];
 
 
+
+  inventory_batches?: {
+
+    id:string;
+
+    batch_number:string;
+
+    expiry_date:string | null;
+
+    quantity_available:number;
+
+    status:
+      | "ACTIVE"
+      | "DEPLETED"
+      | "EXPIRED"
+      | "ARCHIVED";
+
+  }[];
+
+
 }
 
 
@@ -122,10 +142,24 @@ const {
 
     quantity
 
+  ),
+
+
+  inventory_batches(
+
+    id,
+
+    batch_number,
+
+    expiry_date,
+
+    quantity_available,
+
+    status
+
   )
 
 `)
-
 
 .eq(
 

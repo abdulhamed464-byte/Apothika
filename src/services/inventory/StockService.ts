@@ -506,7 +506,6 @@ calculateInventoryValue(
 
 
 
-
 isLowStock(
 
   product:any
@@ -526,6 +525,8 @@ isLowStock(
 
   return (
 
+    stock > 0 &&
+
     stock <=
 
     Number(
@@ -536,6 +537,46 @@ isLowStock(
 
   );
 
+
+},
+
+
+
+
+
+isOutOfStock(
+
+  product:any
+
+):boolean {
+
+
+  return (
+
+    StockService.calculateCurrentStock(
+
+      product
+
+    ) <= 0
+
+  );
+
+
+},
+
+getStockStatus(
+  product:any
+):"OUT_OF_STOCK" | "LOW_STOCK" | "IN_STOCK" {
+
+  if (StockService.isOutOfStock(product)) {
+    return "OUT_OF_STOCK";
+  }
+
+  if (StockService.isLowStock(product)) {
+    return "LOW_STOCK";
+  }
+
+  return "IN_STOCK";
 
 }
 

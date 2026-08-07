@@ -20,103 +20,16 @@ export interface InventoryTransaction {
 
 
 
-export const StockHistoryService = {
 
+function mapTransactions(
 
+  stockIn:any[] = [],
 
+  stockOut:any[] = [],
 
-async getProductHistory(
+  adjustments:any[] = []
 
-productId:string
-
-):Promise<InventoryTransaction[]> {
-
-
-
-const {
-
-data:stockIn,
-
-error:stockInError
-
-}=await supabase
-
-.from("stock_entries")
-
-.select("*")
-
-.eq(
-"product_id",
-productId
-);
-
-
-
-if(stockInError){
-
-throw stockInError;
-
-}
-
-
-
-
-
-const {
-
-data:stockOut,
-
-error:stockOutError
-
-}=await supabase
-
-.from("stock_out_entries")
-
-.select("*")
-
-.eq(
-"product_id",
-productId
-);
-
-
-
-if(stockOutError){
-
-throw stockOutError;
-
-}
-
-
-
-
-
-const {
-
-data:adjustments,
-
-error:adjustmentError
-
-}=await supabase
-
-.from("stock_adjustments")
-
-.select("*")
-
-.eq(
-"product_id",
-productId
-);
-
-
-
-if(adjustmentError){
-
-throw adjustmentError;
-
-}
-
-
+):InventoryTransaction[]{
 
 
 
@@ -124,13 +37,13 @@ const history:InventoryTransaction[] = [
 
 
 
-...(stockIn || []).map(item=>({
+...stockIn.map(item=>({
 
 id:item.id,
 
 type:"STOCK IN",
 
-quantity:item.quantity,
+quantity:Number(item.quantity || 0),
 
 date:item.entry_date,
 
@@ -142,13 +55,13 @@ invoice:item.invoice_number ?? null
 
 
 
-...(stockOut || []).map(item=>({
+...stockOut.map(item=>({
 
 id:item.id,
 
 type:"STOCK OUT",
 
-quantity:item.quantity,
+quantity:Number(item.quantity || 0),
 
 date:item.entry_date,
 
@@ -160,7 +73,7 @@ invoice:item.invoice_number ?? null
 
 
 
-...(adjustments || []).map(item=>({
+...adjustments.map(item=>({
 
 id:item.id,
 
@@ -176,7 +89,7 @@ item.adjustment_type === "ADD"
 
 "ADJUSTMENT REMOVE",
 
-quantity:item.quantity,
+quantity:Number(item.quantity || 0),
 
 date:item.created_at,
 
@@ -190,8 +103,6 @@ reason:item.reason ?? null
 
 
 
-
-
 return history.sort(
 
 (a,b)=>
@@ -201,6 +112,127 @@ new Date(b.date).getTime()
 -
 
 new Date(a.date).getTime()
+
+);
+
+
+
+}
+
+
+
+
+
+export const StockHistoryService = {
+
+
+
+
+
+async getProductHistory(
+
+productId:string
+
+):Promise<InventoryTransaction[]> {
+
+
+
+const [
+
+stockInResponse,
+
+stockOutResponse,
+
+adjustmentResponse
+
+] = await Promise.all([
+
+
+
+supabase
+
+.from("stock_entries")
+
+.select("*")
+
+.eq(
+
+"product_id",
+
+productId
+
+),
+
+
+
+
+supabase
+
+.from("stock_out_entries")
+
+.select("*")
+
+.eq(
+
+"product_id",
+
+productId
+
+),
+
+
+
+
+supabase
+
+.from("stock_adjustments")
+
+.select("*")
+
+.eq(
+
+"product_id",
+
+productId
+
+)
+
+
+
+]);
+
+
+
+
+
+if(stockInResponse.error)
+
+throw stockInResponse.error;
+
+
+
+if(stockOutResponse.error)
+
+throw stockOutResponse.error;
+
+
+
+if(adjustmentResponse.error)
+
+throw adjustmentResponse.error;
+
+
+
+
+
+
+return mapTransactions(
+
+stockInResponse.data ?? [],
+
+stockOutResponse.data ?? [],
+
+adjustmentResponse.data ?? []
 
 );
 
@@ -222,13 +254,19 @@ businessId:string
 
 
 
-const {
+const [
 
-data:stockIn,
+stockInResponse,
 
-error:stockInError
+stockOutResponse,
 
-}=await supabase
+adjustmentResponse
+
+] = await Promise.all([
+
+
+
+supabase
 
 .from("stock_entries")
 
@@ -240,27 +278,12 @@ error:stockInError
 
 businessId
 
-);
-
-
-
-if(stockInError){
-
-throw stockInError;
-
-}
+),
 
 
 
 
-
-const {
-
-data:stockOut,
-
-error:stockOutError
-
-}=await supabase
+supabase
 
 .from("stock_out_entries")
 
@@ -272,27 +295,12 @@ error:stockOutError
 
 businessId
 
-);
-
-
-
-if(stockOutError){
-
-throw stockOutError;
-
-}
+),
 
 
 
 
-
-const {
-
-data:adjustments,
-
-error:adjustmentError
-
-}=await supabase
+supabase
 
 .from("stock_adjustments")
 
@@ -304,107 +312,53 @@ error:adjustmentError
 
 businessId
 
-);
+)
 
 
 
-if(adjustmentError){
-
-throw adjustmentError;
-
-}
+]);
 
 
 
 
 
-const history:InventoryTransaction[] = [
+
+if(stockInResponse.error)
+
+throw stockInResponse.error;
 
 
 
-...(stockIn || []).map(item=>({
+if(stockOutResponse.error)
 
-id:item.id,
-
-type:"STOCK IN",
-
-quantity:item.quantity,
-
-date:item.entry_date,
-
-invoice:item.invoice_number ?? null
-
-})),
+throw stockOutResponse.error;
 
 
 
+if(adjustmentResponse.error)
 
-
-...(stockOut || []).map(item=>({
-
-id:item.id,
-
-type:"STOCK OUT",
-
-quantity:item.quantity,
-
-date:item.entry_date,
-
-invoice:item.invoice_number ?? null
-
-})),
+throw adjustmentResponse.error;
 
 
 
 
 
-...(adjustments || []).map(item=>({
 
-id:item.id,
+return mapTransactions(
 
-type:
+stockInResponse.data ?? [],
 
-item.adjustment_type === "ADD"
+stockOutResponse.data ?? [],
 
-?
-
-"ADJUSTMENT ADD"
-
-:
-
-"ADJUSTMENT REMOVE",
-
-quantity:item.quantity,
-
-date:item.created_at,
-
-reason:item.reason ?? null
-
-}))
-
-
-
-];
-
-
-
-
-
-return history.sort(
-
-(a,b)=>
-
-new Date(b.date).getTime()
-
--
-
-new Date(a.date).getTime()
+adjustmentResponse.data ?? []
 
 );
 
 
 
 }
+
+
 
 
 
