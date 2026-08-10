@@ -5,571 +5,237 @@ import type {
   BatchCreatePayload
 } from "../../types/batch";
 
-
 export const BatchService = {
 
-
-
-  async getOrganizationId(
-  workspaceId:string
-):Promise<string>{
-
-
-  const {
-
-    data,
-
-    error
-
-  } = await supabase
-
-    .from("organizations")
-
-    .select("id")
-
-    .eq(
-      "workspace_id",
-      workspaceId
-    );
-
-
-  if(error){
-
-    throw error;
-
-  }
-
-
-  if(!data || data.length === 0){
-
-    throw new Error(
-      "No organization found for workspace: " + workspaceId
-    );
-
-  }
-
-
-  return data[0].id;
-
-
-},
-
-
-
-
   async createBatch(
-
     payload: BatchCreatePayload
-
   ): Promise<InventoryBatch> {
 
-
-
-    const organizationId =
-
-      await this.getOrganizationId(
-
-        payload.business_id
-
-      );
-
-
-
-
     const {
-
       data,
-
       error
-
     } = await supabase
-
-
       .from("inventory_batches")
-
-
       .insert({
 
-
         business_id:
-
-          organizationId,
-
+          payload.business_id,
 
         product_id:
-
           payload.product_id,
 
-
         stock_entry_id:
-
           payload.stock_entry_id ?? null,
 
-
         batch_number:
-
           payload.batch_number,
 
-
         manufacturing_date:
-
           payload.manufacturing_date ?? null,
 
-
         expiry_date:
-
           payload.expiry_date ?? null,
 
-
         quantity_received:
-
           payload.quantity_received,
-
 
         quantity_available:
-
           payload.quantity_received,
 
-
         purchase_price:
+          payload.purchase_price,
 
-          payload.purchase_price
-
+        status:
+          "ACTIVE"
 
       })
-
-
       .select()
-
-
       .single();
 
-
-
-
-    if(error){
-
+    if (error) {
       throw error;
-
     }
 
-
-
     return data as InventoryBatch;
-
-
   },
-
-
-
-
-
-
-
 
 
   async getProductBatches(
-
-    productId:string
-
-  ):Promise<InventoryBatch[]> {
-
-
+    productId: string
+  ): Promise<InventoryBatch[]> {
 
     const {
-
       data,
-
       error
-
     } = await supabase
-
-
-
       .from("inventory_batches")
-
-
       .select("*")
-
-
       .eq(
-
         "product_id",
-
         productId
-
       )
-
-
       .order(
-
         "created_at",
-
         {
-
-          ascending:false
-
+          ascending: false
         }
-
       );
 
-
-
-
-    if(error){
-
+    if (error) {
       throw error;
-
     }
 
-
-
     return (
-
-      data ??
-
-      []
-
+      data ?? []
     ) as InventoryBatch[];
-
-
   },
-
-
-
-
-
-
-
 
 
   async getBatchById(
-
-    batchId:string
-
-  ):Promise<InventoryBatch>{
-
-
+    batchId: string
+  ): Promise<InventoryBatch> {
 
     const {
-
       data,
-
       error
-
     } = await supabase
-
-
-
       .from("inventory_batches")
-
-
       .select("*")
-
-
       .eq(
-
         "id",
-
         batchId
-
       )
-
-
       .single();
 
-
-
-
-    if(error){
-
+    if (error) {
       throw error;
-
     }
 
-
-
     return data as InventoryBatch;
-
-
   },
-
-
-
-
-
-
-
 
 
   async updateAvailableQuantity(
-
-    batchId:string,
-
-    quantity:number
-
-  ){
-
-
+    batchId: string,
+    quantity: number
+  ) {
 
     const {
-
       data,
-
       error
-
     } = await supabase
-
-
-
       .from("inventory_batches")
-
-
       .update({
 
-
         quantity_available:
-
           quantity
 
-
       })
-
-
       .eq(
-
         "id",
-
         batchId
-
       )
-
-
       .select()
-
-
       .single();
 
-
-
-
-    if(error){
-
+    if (error) {
       throw error;
-
     }
 
-
-
     return data as InventoryBatch;
-
-
   },
-
-
-
-
-
-
-
 
 
   async getAvailableBatches(
-
-    productId:string
-
-  ):Promise<InventoryBatch[]> {
-
-
+    productId: string
+  ): Promise<InventoryBatch[]> {
 
     const {
-
       data,
-
       error
-
     } = await supabase
-
-
-
       .from("inventory_batches")
-
-
       .select("*")
-
-
       .eq(
-
         "product_id",
-
         productId
-
       )
-
-
       .eq(
-
         "status",
-
         "ACTIVE"
-
       )
-
-
       .gt(
-
         "quantity_available",
-
         0
-
       )
-
-
       .order(
-
         "expiry_date",
-
         {
-
-          ascending:true,
-
-          nullsFirst:false
-
+          ascending: true,
+          nullsFirst: false
         }
-
       )
-
-
       .order(
-
         "created_at",
-
         {
-
-          ascending:true
-
+          ascending: true
         }
-
       );
 
-
-
-
-    if(error){
-
+    if (error) {
       throw error;
-
     }
 
-
-
     return (
-
-      data ??
-
-      []
-
+      data ?? []
     ) as InventoryBatch[];
-
-
   },
-
-
-
-
-
 
 
   isExpired(
+    batch: InventoryBatch
+  ): boolean {
 
-    batch:InventoryBatch
-
-  ):boolean{
-
-
-    if(!batch.expiry_date){
-
+    if (!batch.expiry_date) {
       return false;
-
     }
 
-
     return (
-
       new Date(batch.expiry_date)
-
       <
-
       new Date()
-
     );
-
-
   },
 
 
-
-
-
-
-
   isExpiringSoon(
+    batch: InventoryBatch,
+    days: number = 30
+  ): boolean {
 
-    batch:InventoryBatch,
-
-    days:number = 30
-
-  ):boolean{
-
-
-    if(!batch.expiry_date){
-
+    if (!batch.expiry_date) {
       return false;
-
     }
 
-
-
     const difference =
-
       new Date(batch.expiry_date).getTime()
-
       -
-
       new Date().getTime();
 
-
-
     const daysRemaining =
-
       difference /
-
       (
-
         1000 *
-
         60 *
-
         60 *
-
         24
-
       );
 
-
-
     return (
-
       daysRemaining > 0
-
       &&
-
       daysRemaining <= days
-
     );
-
-
   }
-
 
 };

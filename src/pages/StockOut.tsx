@@ -11,7 +11,7 @@ const WORKSPACE_ID =
 
 
 const BUSINESS_ID =
-"ba4ce0ce-2380-4657-bd77-324bed8afa1d";
+"0a3fc44c-c85a-44dd-9791-b9a44eec2aed";
 
 function StockOut(){
 
@@ -66,22 +66,21 @@ setProducts(data);
 
 
 function change(
+  e: React.ChangeEvent<
+    HTMLInputElement |
+    HTMLSelectElement
+  >
+) {
 
-e:React.ChangeEvent<
-HTMLInputElement|
-HTMLSelectElement
->
+  const { name, value } = e.target;
 
-){
+  setForm({
 
-setForm({
+    ...form,
 
-...form,
+    [name]: value,
 
-[e.target.name]:
-e.target.value
-
-});
+  });
 
 }
 
