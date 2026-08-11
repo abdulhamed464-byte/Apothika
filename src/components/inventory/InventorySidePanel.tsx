@@ -75,7 +75,13 @@ navigate("/dashboard/inventory/stock-out")
 >
 - Stock Out
 </button>
-
+<button
+onClick={() =>
+navigate("/dashboard/inventory/adjustment")
+}
+>
+± Stock Adjustment
+</button>
 
 </div>
 

@@ -2,20 +2,17 @@ import { useState } from "react";
 
 import type { StockInPayload } from "../../types/stock";
 
-
 interface Props {
 
-products:any[];
+products:any;
 
-suppliers:any[];
+suppliers:any;
 
 onSubmit:(data:StockInPayload)=>void;
 
 loading:boolean;
 
 }
-
-
 
 function StockInForm({
 
@@ -28,8 +25,6 @@ onSubmit,
 loading
 
 }:Props){
-
-
 
 const [form,setForm]=useState({
 
@@ -44,13 +39,9 @@ purchase_price:"",
 invoice_number:"",
 
 entry_date:
-
 new Date()
-
 .toISOString()
-
 .split("T")[0],
-
 
 batch_number:"",
 
@@ -60,48 +51,35 @@ expiry_date:""
 
 });
 
-
-
-
-
 const selectedProduct =
 
 products.find(
 
-product =>
+(product:any) =>
 
 product.id === form.product_id
 
 );
 
-
-
-
-
 function change(
 
-e:React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+e:React.ChangeEvent<
+HTMLInputElement |
+HTMLSelectElement
+
+>
 
 ){
-
 
 setForm({
 
 ...form,
 
-[e.target.name]:
-
-e.target.value
+[e.target.name]: e.target.value
 
 });
 
-
 }
-
-
-
-
-
 
 function submit(
 
@@ -109,94 +87,105 @@ e:React.FormEvent
 
 ){
 
-
 e.preventDefault();
 
-
-
-if(
-
-Number(form.quantity)<=0
-
-){
+if(!form.product_id){
 
 alert(
-
-"Quantity must be greater than zero"
-
+"Please select a product"
 );
 
 return;
 
 }
 
+if(
+!form.quantity ||
+Number(form.quantity)<=0
+){
 
+alert(
+"Quantity must be greater than zero"
+);
 
-
-
-
-onSubmit({
-
-
-product_id:
-
-form.product_id,
-
-
-supplier_id:
-
-form.supplier_id || null,
-
-
-quantity:
-
-Number(form.quantity),
-
-
-purchase_price:
-
-Number(form.purchase_price),
-
-
-invoice_number:
-
-form.invoice_number,
-
-
-entry_date:
-
-form.entry_date,
-
-
-
-batch_number:
-
-form.batch_number || undefined,
-
-
-manufacturing_date:
-
-form.manufacturing_date || undefined,
-
-
-expiry_date:
-
-form.expiry_date || undefined,
-
-
-business_id:""
-
-
-});
-
+return;
 
 }
 
+if(
+!form.purchase_price ||
+Number(form.purchase_price)<0
+){
 
+alert(
+"Please enter a valid purchase price"
+);
 
+return;
 
+}
 
+if(
+selectedProduct?.batch_required &&
+!form.batch_number
+){
 
+alert(
+"Batch number is required for this product"
+);
+
+return;
+
+}
+
+if(
+selectedProduct?.batch_required &&
+selectedProduct?.expiry_required &&
+!form.expiry_date
+){
+
+alert(
+"Expiry date is required for this product"
+);
+
+return;
+
+}
+
+onSubmit({
+
+product_id:
+form.product_id,
+
+supplier_id:
+form.supplier_id || null,
+
+quantity:
+Number(form.quantity),
+
+purchase_price:
+Number(form.purchase_price),
+
+invoice_number:
+form.invoice_number || null,
+
+entry_date:
+form.entry_date,
+
+batch_number:
+form.batch_number || undefined,
+
+manufacturing_date:
+form.manufacturing_date || undefined,
+
+expiry_date:
+form.expiry_date || undefined,
+
+business_id:""
+
+});
+
+}
 
 return (
 
@@ -208,23 +197,13 @@ className="product-form"
 
 >
 
-
-
 <h3>
-
 Stock In
-
 </h3>
 
-
-
-
 <label>
-
 Product
-
 </label>
-
 
 <select
 
@@ -234,19 +213,17 @@ value={form.product_id}
 
 onChange={change}
 
+required
+
 >
 
-
 <option value="">
-
 Select Product
-
 </option>
-
 
 {
 
-products.map(product=>(
+products.map((product:any)=>(
 
 <option
 
@@ -256,7 +233,9 @@ value={product.id}
 
 >
 
-{product.product_name} - {product.sku}
+{product.product_name}
+{" - "}
+{product.sku}
 
 </option>
 
@@ -264,20 +243,11 @@ value={product.id}
 
 }
 
-
 </select>
 
-
-
-
-
-
 <label>
-
 Supplier
-
 </label>
-
 
 <select
 
@@ -289,17 +259,13 @@ onChange={change}
 
 >
 
-
 <option value="">
-
 Select Supplier
-
 </option>
-
 
 {
 
-suppliers.map(s=>(
+suppliers.map((s:any)=>(
 
 <option
 
@@ -317,20 +283,11 @@ value={s.id}
 
 }
 
-
 </select>
 
-
-
-
-
-
 <label>
-
 Quantity
-
 </label>
-
 
 <input
 
@@ -342,19 +299,15 @@ value={form.quantity}
 
 onChange={change}
 
+min="1"
+
+required
+
 />
 
-
-
-
-
-
 <label>
-
 Purchase Price
-
 </label>
-
 
 <input
 
@@ -366,19 +319,17 @@ value={form.purchase_price}
 
 onChange={change}
 
+min="0"
+
+step="0.01"
+
+required
+
 />
 
-
-
-
-
-
 <label>
-
 Invoice Number
-
 </label>
-
 
 <input
 
@@ -390,17 +341,9 @@ onChange={change}
 
 />
 
-
-
-
-
-
 <label>
-
 Entry Date
-
 </label>
-
 
 <input
 
@@ -412,13 +355,9 @@ value={form.entry_date}
 
 onChange={change}
 
+required
+
 />
-
-
-
-
-
-
 
 {
 
@@ -426,25 +365,15 @@ selectedProduct?.batch_required &&
 
 <>
 
-
 <hr/>
 
-
 <h3>
-
 Batch Information
-
 </h3>
 
-
-
-
 <label>
-
 Batch Number *
-
 </label>
-
 
 <input
 
@@ -454,18 +383,13 @@ value={form.batch_number}
 
 onChange={change}
 
+required
+
 />
 
-
-
-
-
 <label>
-
 Manufacturing Date
-
 </label>
-
 
 <input
 
@@ -479,10 +403,6 @@ onChange={change}
 
 />
 
-
-
-
-
 {
 
 selectedProduct?.expiry_required &&
@@ -490,11 +410,8 @@ selectedProduct?.expiry_required &&
 <>
 
 <label>
-
 Expiry Date *
-
 </label>
-
 
 <input
 
@@ -506,25 +423,21 @@ value={form.expiry_date}
 
 onChange={change}
 
+required
+
 />
 
 </>
 
 }
 
-
-
 </>
 
 }
 
-
-
-
-
-
-
 <button
+
+type="submit"
 
 disabled={loading}
 
@@ -546,14 +459,10 @@ loading
 
 </button>
 
-
-
 </form>
 
 );
 
 }
-
-
 
 export default StockInForm;
