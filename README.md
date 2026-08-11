@@ -1,75 +1,64 @@
-# React + TypeScript + Vite
+# Apothika — Inventory & Business Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Apothika is a React + TypeScript business management application focused on inventory, stock movement, purchasing, and operational workflows.
 
-Currently, two official plugins are available:
+## Included
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Responsive landing page
+- Authentication and protected dashboard
+- Business dashboard
+- Product management
+- SKU and barcode support
+- Inventory search and filtering
+- Stock In / Stock Out
+- Stock adjustments
+- Supplier management
+- Purchase management
+- Inventory transaction history
+- Inventory reports and analytics
+- Batch and expiry foundations
+- Barcode scanning
+- Barcode label generation
+- Supabase integration
+- Workspace/business separation
 
-## React Compiler
+## Technology
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- TypeScript
+- Vite
+- Supabase
+- React Router
+- Tailwind CSS
+- Recharts
+- Lucide React
 
-## Expanding the ESLint configuration
+## Setup
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+Install dependencies:
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+    npm install
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+Create your environment file:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+    cp .env.example .env
 
-```
+Add your Supabase credentials to .env.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+Start development:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+    npm run dev
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Create a production build:
 
-```
+    npm run build
+
+## Current Status
+
+This is an existing working software asset offered as-is.
+
+The buyer receives the existing source code and project structure and can customize, deploy, and continue development.
+
+## Sale
+
+Transfer terms, licensing, exclusivity, and included services are to be agreed with the buyer.
