@@ -1,6 +1,6 @@
 # Apothika
 
-**Production-ready inventory and business management SaaS for growing businesses.**
+**Functional inventory and business management SaaS foundation for growing businesses.**
 
 🌐 **Live Demo:** https://apothika.vercel.app
 
@@ -93,8 +93,13 @@ See [SETUP.md](SETUP.md) for local development and deployment instructions.
 ## Project Documentation
 
 - [SETUP.md](SETUP.md) — Installation, configuration and deployment
-- [FEATURES.md](FEATURES.md) — Detailed feature overview
 - [HANDOVER.md](HANDOVER.md) — Buyer handover information
+
+## Database & Storage
+
+The repository includes `supabase/schema.sql`, containing the exported public database schema, database functions, and Row Level Security policies required by the application.
+
+The application also uses a Supabase Storage bucket named `product-images`. The buyer should recreate this bucket in their own Supabase project as described in `SETUP.md`.
 
 ## Security
 
@@ -103,6 +108,8 @@ No production credentials or private keys are included in this repository.
 Environment variables are documented through `.env.example`.
 
 Production credentials must be configured by the buyer using their own service accounts.
+
+The supplied Row Level Security policies should be reviewed and tightened as necessary before production use.
 
 ## Sale
 
