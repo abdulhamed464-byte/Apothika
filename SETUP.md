@@ -8,7 +8,8 @@ This guide explains how to install, configure, run, build, and deploy the applic
 
 ## Requirements
 
-- Node.js 20+
+- Node.js 24.x recommended
+- Node.js 20+ supported
 - npm
 - Git
 - Supabase account
@@ -110,7 +111,19 @@ The application uses Supabase for authentication and backend services.
 
 The buyer should create or use their own Supabase project and configure the required database and authentication settings.
 
+The repository includes `supabase/schema.sql`, which contains the exported public database schema, database functions, and Row Level Security policies used by the application. Apply this schema to the buyer’s Supabase project before using the application.
+
 The buyer should also configure their production application URL in Supabase authentication settings.
+
+### Supabase Storage
+
+The application uses a Storage bucket named `product-images`. Create this bucket in the buyer’s Supabase project and configure it as a **public bucket**, because the application uses Supabase public URLs for product images.
+
+Existing storage files are not included in the seller package.
+
+### Row Level Security
+
+The supplied schema includes the application’s existing Row Level Security policies. The buyer should review these policies before production use. Some existing policies are permissive and may need to be tightened depending on the buyer’s users, workspaces, and required data-isolation model.
 
 ## 8. Security
 
