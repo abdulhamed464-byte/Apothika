@@ -12,7 +12,8 @@ Included:
 - Existing documentation
 - Design assets included in the repository
 - Existing inventory and business-management functionality
-- Current production deployment configuration
+- Deployment configuration and instructions required to recreate the application deployment
+- Supabase database schema (`supabase/schema.sql`)
 - Setup and deployment documentation
 
 ## 2. Technology Stack
@@ -84,15 +85,29 @@ Refer to `SETUP.md` for installation and deployment instructions.
 
 The buyer should use their own Supabase project for the transferred application.
 
+The repository includes `supabase/schema.sql`, which contains the exported public database schema, database functions, and Row Level Security policies required by the current application.
+
 The buyer is responsible for configuring:
 
 - Authentication
-- Database
+- Database using the supplied schema
 - Database policies
 - Production URL configuration
 - Any future Supabase services
 
+### Supabase Storage
+
+The application uses a Supabase Storage bucket named:
+
+`product-images`
+
+The buyer should recreate this bucket in their own Supabase project and configure it as a public bucket because the application uses Supabase public URLs for product images.
+
+Storage bucket contents are not transferred as part of the seller package.
+
 Production credentials should not be stored in the Git repository.
+
+The buyer should review the supplied Row Level Security policies before production use. Some existing policies are intentionally permissive and may require tightening for the buyer's intended deployment, users, and data-isolation requirements. No claim is made that the current database policies are production-secure for every deployment scenario.
 
 ## 8. GitHub Transfer
 
@@ -157,11 +172,13 @@ Never commit:
 9. Buyer connects their domain if required.
 10. Seller removes or relinquishes access to services that were used only for the original deployment.
 
-## 13. Current Business Status
+## 13. Data and Business Status
 
 Apothika is a pre-revenue software asset.
 
 There are currently no represented customers or recurring revenue.
+
+No existing customer, business, transaction, inventory, or other production database records are included in the seller package. The supplied database schema contains the database structure and required database definitions, not existing business data.
 
 The value of the project is primarily in the existing software implementation, product foundation, UI, authentication, inventory functionality, documentation, and ability to continue development.
 
@@ -206,6 +223,6 @@ The main project information is available in:
 
 This handover document describes the current project state and intended transfer process.
 
-The buyer should independently verify the application's functionality, source code, dependencies, infrastructure, and configuration before completing a transaction.
+The buyer should independently verify the application's functionality, source code, dependencies, infrastructure, database policies, and configuration before completing a transaction.
 
 The buyer should replace all seller-controlled credentials and services with accounts controlled by the buyer.
